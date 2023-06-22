@@ -1,8 +1,11 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { database_config } from './configs/configuaration.config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { RoleModule } from './role/role.module';
+// import { CheckExists } from './middlewares/checkExists/checkExists.middleware';
+import { AccountsModule } from './accounts/accounts.module';
+import routes from './routes/index.route';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -19,8 +22,14 @@ import { RoleModule } from './role/role.module';
       inject: [ConfigService],
     }),
     RoleModule,
+    AccountsModule,
   ],
   controllers: [],
   providers: [],
 })
+// export class AppModule implements NestModule {
+//   configure(consumer: MiddlewareConsumer) {
+//     consumer.apply(CheckExists).forRoutes(`${routes.role}`);
+//   }
+// }
 export class AppModule {}

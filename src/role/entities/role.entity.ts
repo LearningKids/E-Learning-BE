@@ -10,12 +10,8 @@ export enum ROLE {
   Student = 'STUDENT',
   Student_Trial = 'STUDENT_TRIAL',
 }
-@Schema({
-  timestamps: {
-    createdAt: 'created_at',
-    updatedAt: 'updated_at',
-  },
-})
+
+@Schema({ versionKey: false, timestamps: true })
 export class Role extends BaseEntity {
   @Prop({ unique: true, required: true })
   role_type: number;
