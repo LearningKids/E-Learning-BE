@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
-import { Role } from 'src/role/entities/role.entity';
 import { BaseEntity } from 'src/shared/base/base.entity';
 export type AccountDocument = HydratedDocument<Account>;
 
@@ -31,7 +30,7 @@ export class Account extends BaseEntity {
     select: false,
     trim: true,
     minlength: 6,
-    maxlength: 30,
+    match: /((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/,
   })
   password: string;
 
@@ -44,19 +43,34 @@ export class Account extends BaseEntity {
   })
   avatar: string;
 
-  @Prop()
+  @Prop({
+    required: true,
+  })
   date_of_birth: Date;
 
   @Prop({
     enum: GENDER,
+    default: GENDER.Other,
   })
   gender: string;
-
   @Prop({
-    type: mongoose.Schema.Types.ObjectId,
-    ref: Role.name,
+    default: null,
+    select: false,
   })
-  role: Role;
+  refreshToken: string;
+  @Prop({
+    default: 4,
+  })
+  role: number;
+
+  @Prop({ default: false })
+  isVerify: boolean;
+
+  @Prop({ default: true })
+  isActive: boolean;
+
+  @Prop({ default: false })
+  isBlock: boolean;
 }
 
 export const AccountSchema = SchemaFactory.createForClass(Account);
