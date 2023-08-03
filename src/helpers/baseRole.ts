@@ -6,15 +6,15 @@ const baseRoles = [
     roleName: roleNames.admin,
   },
   {
-    id: 1,
+    id: 2,
     roleName: roleNames.teacher,
   },
   {
-    id: 1,
+    id: 3,
     roleName: roleNames.student,
   },
   {
-    id: 1,
+    id: 4,
     roleName: roleNames.student_trial,
   },
 ];

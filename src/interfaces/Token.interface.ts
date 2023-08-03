@@ -1,4 +1,4 @@
 export interface IToken {
   email: string;
-  role: number;
+  role: string;
 }

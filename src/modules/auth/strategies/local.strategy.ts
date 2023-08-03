@@ -1,7 +1,13 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-local';
 import { AuthService } from '../auth.service';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  HttpStatus,
+  HttpException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
@@ -10,6 +16,16 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(email: string, password: string) {
+    const checkAccount = await this.authService.getAccountByEmail(email);
+    if (!checkAccount) {
+      throw new NotFoundException('Email not found');
+    }
+    if (!checkAccount.isActive) {
+      throw new HttpException('Account is not active', HttpStatus.OK);
+    }
+    if (checkAccount.isBlock) {
+      throw new HttpException('Account is block', HttpStatus.OK);
+    }
     const account = await this.authService.validateAccount(email, password);
     if (!account) {
       throw new UnauthorizedException();

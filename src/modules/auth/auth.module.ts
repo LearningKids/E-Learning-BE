@@ -4,7 +4,7 @@ import { AuthController } from './auth.controller';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { LocalStrategy } from './strategies/local.strategy';
-import { MongooseModule } from '@nestjs/mongoose';
+import { MongooseModule, getConnectionToken } from '@nestjs/mongoose';
 import {
   Account,
   AccountSchema,
@@ -17,13 +17,19 @@ import { MailModule } from '../mail/mail.module';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Account.name, schema: AccountSchema }]),
+    MongooseModule.forFeature([
+      {
+        name: Account.name,
+        schema: AccountSchema,
+      },
+    ]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       secret: `${process.env.jwt_secret}`,
       signOptions: { expiresIn: '3600s' },
     }),
-    MailModule,
+
+    // MailModule,
   ],
   controllers: [AuthController],
   providers: [
@@ -33,8 +39,9 @@ import { MailModule } from '../mail/mail.module';
     JwtRefreshTokenStrategy,
   ],
 })
-export class AuthModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(EmailExistsMiddleware).forRoutes(`${routes.register}`);
-  }
-}
+export class AuthModule {}
+// export class AuthModule implements NestModule {
+//   configure(consumer: MiddlewareConsumer) {
+//     consumer.apply(EmailExistsMiddleware).forRoutes(`${routes.register}`);
+//   }
+// }

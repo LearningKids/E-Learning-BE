@@ -45,6 +45,9 @@ export class RegisterDto {
   })
   lastname: string;
 
-  @IsNotEmpty()
+  @ApiProperty({
+    type: Number,
+    default: 4,
+  })
   role: number;
 }

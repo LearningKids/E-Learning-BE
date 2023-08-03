@@ -1,7 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { HydratedDocument } from 'mongoose';
+import { HydratedDocument, ObjectId } from 'mongoose';
 import { BaseEntity } from 'src/shared/base/base.entity';
-export type AccountDocument = HydratedDocument<Account>;
 
 export enum GENDER {
   Male = 'MALE',
@@ -10,6 +9,7 @@ export enum GENDER {
 }
 @Schema({ versionKey: false, timestamps: true })
 export class Account extends BaseEntity {
+  @Prop()
   @Prop({
     unique: true,
     required: true,
@@ -43,9 +43,7 @@ export class Account extends BaseEntity {
   })
   avatar: string;
 
-  @Prop({
-    required: true,
-  })
+  @Prop()
   date_of_birth: Date;
 
   @Prop({
@@ -72,5 +70,6 @@ export class Account extends BaseEntity {
   @Prop({ default: false })
   isBlock: boolean;
 }
+export type AccountDocument = HydratedDocument<Account>;
 
 export const AccountSchema = SchemaFactory.createForClass(Account);

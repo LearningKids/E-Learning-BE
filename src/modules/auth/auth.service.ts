@@ -5,25 +5,25 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
+import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
-import { Model } from 'mongoose';
+import { Connection, Model } from 'mongoose';
 import { RegisterDto } from 'src/modules/auth/dto/register.dto';
 import { Account } from 'src/modules/accounts/entities/account.entity';
 import baseRoles from 'src/helpers/baseRole';
 import { JwtService } from '@nestjs/jwt';
 import { IToken } from 'src/interfaces/Token.interface';
-import { MailService } from '../mail/mail.service';
+// import { MailService } from '../mail/mail.service';
 import { roleNames } from 'src/core/constants';
 @Injectable()
 export class AuthService {
   saltOrRounds = 10;
   constructor(
     @InjectModel(Account.name) private readonly accountModel: Model<Account>,
-    private jwtService: JwtService,
-    private mailService: MailService,
+    @InjectConnection() private connection: Connection,
+    private jwtService: JwtService, // private mailService: MailService,
   ) {}
-
+  //! register
   async register(registerDto: RegisterDto): Promise<Account> {
     try {
       const roleStudent_Trial = baseRoles.find(
@@ -33,16 +33,18 @@ export class AuthService {
       registerDto.password = hashPassword;
       registerDto.role = roleStudent_Trial.id;
       const createdAccount = new this.accountModel(registerDto);
-      this.mailService.sendUserConfirmation(createdAccount.email, '123');
+      // this.mailService.sendUserConfirmation(createdAccount.email, '123');
       return createdAccount.save();
     } catch (error) {
       console.log(error);
     }
   }
+  //! login
   async login(account: Account) {
+    const role = baseRoles.find((role) => role.id === account.role);
     const payload: IToken = {
       email: account.email,
-      role: account.role,
+      role: role.roleName,
     };
     const accessToken = this.generateAccessToken(payload);
     const refreshToken = this.generateRefreshToken(payload);
@@ -58,17 +60,21 @@ export class AuthService {
       refreshToken,
     };
   }
-  async getAccountByEmail(email: string) {
+  //! getByEmail
+  async getAccountByEmail(email: string): Promise<Account> {
     return await this.accountModel.findOne({ email });
   }
-
-  async validateAccount(email: string, password: string) {
+  //! check password
+  async validateAccount(email: string, password: string): Promise<Account> {
     const account = await this.accountModel
       .findOne({ email })
       .select('+password');
     if (account && (await this.generateFunc(password, account.password))) {
       return account;
+    } else {
+      throw new HttpException('Password incorect', HttpStatus.BAD_REQUEST);
     }
+
     return null;
   }
 
@@ -85,7 +91,7 @@ export class AuthService {
       if (checkRefreshToken) {
         const accessToken = this.generateAccessToken({
           email: checkRefreshToken.email,
-          role: checkRefreshToken.role,
+          role: 'checkRefreshToken.role',
         });
         return { accessToken: accessToken };
       }
@@ -94,7 +100,10 @@ export class AuthService {
     }
   }
   //! Check_refreshToken
-  async refreshTokenMatchWithAccount(email: string, refreshToken: string) {
+  async refreshTokenMatchWithAccount(
+    email: string,
+    refreshToken: string,
+  ): Promise<Account> {
     const account = await this.accountModel
       .findOne({ email })
       .select('+refreshToken');
@@ -127,9 +136,6 @@ export class AuthService {
   //! compare data
   async generateFunc(dataInput: string, dataStore: string): Promise<boolean> {
     const isMatch = await bcrypt.compare(dataInput, dataStore);
-    if (!isMatch) {
-      throw new HttpException('Password incorrect', HttpStatus.BAD_REQUEST);
-    }
     return isMatch;
   }
 }
