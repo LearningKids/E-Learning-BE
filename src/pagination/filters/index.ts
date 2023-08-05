@@ -3,12 +3,18 @@ const queryFilters = (dataFilter: any) => {
   const filters = [];
 
   keys.forEach((key) => {
-    const filter = {};
-    filter[key] = { $regex: dataFilter[key], $options: 'i' };
-    filters.push(filter);
+    if (dataFilter[key]) {
+      const filter = {};
+      filter[key] = { $regex: dataFilter[key], $options: 'i' };
+      filters.push(filter);
+    }
   });
 
-  return { $or: filters };
+  if (filters.length > 0) {
+    return { $or: filters };
+  } else {
+    return {};
+  }
 };
 
 export default queryFilters;
