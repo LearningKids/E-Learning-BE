@@ -30,20 +30,12 @@ export class RegisterDto {
   phonenumber: string;
 
   @IsNotEmpty()
-  @MaxLength(20)
+  @MaxLength(150)
   @ApiProperty({
     type: String,
     default: null,
   })
-  firstname: string;
-
-  @IsNotEmpty()
-  @MaxLength(20)
-  @ApiProperty({
-    type: String,
-    default: null,
-  })
-  lastname: string;
+  fullname: string;
 
   @ApiProperty({
     type: Number,

@@ -8,10 +8,11 @@ import {
   UseGuards,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { AccountsService } from './accounts.service';
 import { UpdateAccountDto } from './dto/update-account.dto';
-import { ApiTags, ApiBearerAuth, ApiBody } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth, ApiBody, ApiQuery } from '@nestjs/swagger';
 import routes from 'src/routes/index.route';
 import { JwtAccessTokenGuard } from '../auth/guards/jwt.guard';
 import { CreateAccountDto } from './dto/create-account.dto';
@@ -20,6 +21,7 @@ import { BlockAccountDto } from './dto/block-account.dto';
 import { RolesGuard } from '../auth/guards/role.guard';
 import { Roles, accessRole } from 'src/decorators/roles.decorators';
 import { Public } from 'src/decorators/auth.decorators';
+import { FilterAccountDto } from './dto/filter-account.dto';
 
 @Controller(`${routes.account}`)
 @ApiTags(`${routes.account}`)
@@ -35,8 +37,7 @@ export class AccountsController {
       account_1: {
         value: {
           email: 'cntt1912@gmail.com',
-          firstname: 'Cuong',
-          lastname: 'Nguyen',
+          fullname: 'Nguyen Cuong',
           phonenumber: '0962458201',
           password: 'Cuong1912!',
           gender: `${GENDER.Male}`,
@@ -54,8 +55,11 @@ export class AccountsController {
   @Roles(accessRole.accessAdmin)
   @UseGuards(RolesGuard)
   @UseGuards(JwtAccessTokenGuard)
-  findAll() {
-    return this.accountsService.findAll();
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'page_size', required: false, type: Number })
+  @ApiQuery({ name: 'email', required: false, type: String })
+  findAll(@Query() filter: FilterAccountDto) {
+    return this.accountsService.findAll(filter);
   }
   //! get detail
   @Get(':id')

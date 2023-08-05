@@ -22,14 +22,7 @@ export class CreateAccountDto {
     type: String,
     default: null,
   })
-  firstname: string;
-
-  @IsNotEmpty()
-  @ApiProperty({
-    type: String,
-    default: null,
-  })
-  lastname: string;
+  fullname: string;
 
   @IsNotEmpty()
   @ApiProperty({
