@@ -110,6 +110,6 @@ export class AccountsController {
   //! delete
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.accountsService.remove(+id);
+    return this.accountsService.remove(id);
   }
 }

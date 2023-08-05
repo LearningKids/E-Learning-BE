@@ -67,7 +67,6 @@ export class AccountsService {
       if (!account) {
         throw new NotFoundException(`${id} not Found`);
       }
-
       const accountBlock = await this.accountModel
         .findOneAndUpdate(
           { _id: id },
@@ -81,8 +80,15 @@ export class AccountsService {
     }
   }
   //! remove
-  remove(id: number) {
-    return `This action removes a #${id} account`;
+  async remove(id: string) {
+    const account = await this.accountModel.findById(id).exec();
+    if (!account) {
+      throw new NotFoundException(`${id} not Found`);
+    }
+    const accountDelete = await this.accountModel
+      .findOneAndUpdate({ _id: id }, { deleted_at: Date.now() })
+      .exec();
+    return 'Delete sucess';
   }
   //! Find Account by Email
   async getAccountByEmail(email: string): Promise<Account> {
