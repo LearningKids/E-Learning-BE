@@ -20,11 +20,11 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     if (!checkAccount) {
       throw new NotFoundException('Email not found');
     }
-    if (!checkAccount.isActive) {
+    if (checkAccount.deleted_at != null) {
       throw new HttpException('Account is not active', HttpStatus.OK);
     }
     if (checkAccount.isBlock) {
-      throw new HttpException('Account is block', HttpStatus.OK);
+      throw new HttpException('Account was block', HttpStatus.OK);
     }
     const account = await this.authService.validateAccount(email, password);
     if (!account) {

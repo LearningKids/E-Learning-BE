@@ -60,9 +60,6 @@ export class Account extends BaseEntity {
   @Prop({ default: false })
   isVerify: boolean;
 
-  @Prop({ default: true })
-  isActive: boolean;
-
   @Prop({ default: false })
   isBlock: boolean;
 }

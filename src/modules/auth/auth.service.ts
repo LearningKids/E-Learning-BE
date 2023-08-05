@@ -75,8 +75,6 @@ export class AuthService {
     } else {
       throw new HttpException('Password incorect', HttpStatus.BAD_REQUEST);
     }
-
-    return null;
   }
 
   //! get AccessToken When expried
