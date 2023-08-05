@@ -52,8 +52,8 @@ export class AccountsController {
   }
   //! get all
   @Get()
-  // @Roles(accessRole.accessAdmin)
-  // @UseGuards(RolesGuard)
+  @Roles(accessRole.accessAdmin)
+  @UseGuards(RolesGuard)
   @UseGuards(JwtAccessTokenGuard)
   @ApiQuery({ name: 'page', required: false, type: Number })
   @ApiQuery({ name: 'page_size', required: false, type: Number })

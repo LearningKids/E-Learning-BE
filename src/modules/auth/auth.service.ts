@@ -27,8 +27,9 @@ export class AuthService {
   async register(registerDto: RegisterDto): Promise<Account> {
     try {
       const roleStudent_Trial = baseRoles.find(
-        (role) => (role.roleName = roleNames.student_trial),
+        (role) => role.roleName === roleNames.student_trial,
       );
+      console.log(roleStudent_Trial);
       const hashPassword = await this.hashFunc(registerDto.password);
       registerDto.password = hashPassword;
       registerDto.role = roleStudent_Trial.id;
