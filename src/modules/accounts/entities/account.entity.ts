@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, ObjectId } from 'mongoose';
+import { HydratedDocument } from 'mongoose';
 import { BaseEntity } from 'src/shared/base/base.entity';
-
+import * as panigate from 'mongoose-paginate-v2';
 export enum GENDER {
   Male = 'MALE',
   Female = 'FEMALE',
@@ -9,7 +9,6 @@ export enum GENDER {
 }
 @Schema({ versionKey: false, timestamps: true })
 export class Account extends BaseEntity {
-  @Prop()
   @Prop({
     unique: true,
     required: true,
@@ -19,11 +18,8 @@ export class Account extends BaseEntity {
   })
   email: string;
 
-  @Prop({ required: true, trim: true, minlength: 3, maxlength: 20 })
-  firstname: string;
-
-  @Prop({ required: true, trim: true, minlength: 3, maxlength: 20 })
-  lastname: string;
+  @Prop({ required: true, trim: true, minlength: 10, maxlength: 150 })
+  fullname: string;
 
   @Prop({
     required: true,
@@ -73,3 +69,4 @@ export class Account extends BaseEntity {
 export type AccountDocument = HydratedDocument<Account>;
 
 export const AccountSchema = SchemaFactory.createForClass(Account);
+AccountSchema.plugin(panigate);

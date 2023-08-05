@@ -6,8 +6,7 @@ export class UpdateAccountDto extends PartialType(
 ) {
   password?: string;
   gender?: string;
-  firstname?: string;
-  lastname?: string;
+  fullname?: string;
   phonenumber?: string;
   role?: number;
   date_of_birth?: string;

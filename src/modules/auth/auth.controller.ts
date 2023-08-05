@@ -30,8 +30,7 @@ export class AuthController {
       account_1: {
         value: {
           email: 'cntt1912@gmail.com',
-          firstname: 'Cuong',
-          lastname: 'Nguyen',
+          fullname: 'NguyenCuong',
           phonenumber: '0962458201',
           password: 'Cuong1912!',
         } as RegisterDto,
