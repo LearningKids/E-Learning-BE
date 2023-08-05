@@ -1,10 +1,14 @@
 const queryFilters = (dataFilter: any) => {
   const keys = Object.keys(dataFilter).slice(2);
-  const filters = {};
-  keys.map((key) => {
-    filters[key] = { $regex: dataFilter[key], $options: 'i' };
+  const filters = [];
+
+  keys.forEach((key) => {
+    const filter = {};
+    filter[key] = { $regex: dataFilter[key], $options: 'i' };
+    filters.push(filter);
   });
-  return filters;
+
+  return { $or: filters };
 };
 
 export default queryFilters;

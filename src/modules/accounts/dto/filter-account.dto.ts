@@ -10,4 +10,12 @@ export class FilterAccountDto extends PaginationDto {
     type: String,
   })
   email: string;
+
+  @IsOptional()
+  @Type(() => String)
+  @IsString()
+  @ApiProperty({
+    type: String,
+  })
+  fullname: string;
 }

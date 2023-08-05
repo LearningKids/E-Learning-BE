@@ -52,12 +52,13 @@ export class AccountsController {
   }
   //! get all
   @Get()
-  @Roles(accessRole.accessAdmin)
-  @UseGuards(RolesGuard)
+  // @Roles(accessRole.accessAdmin)
+  // @UseGuards(RolesGuard)
   @UseGuards(JwtAccessTokenGuard)
   @ApiQuery({ name: 'page', required: false, type: Number })
   @ApiQuery({ name: 'page_size', required: false, type: Number })
   @ApiQuery({ name: 'email', required: false, type: String })
+  @ApiQuery({ name: 'fullname', required: false, type: String })
   findAll(@Query() filter: FilterAccountDto) {
     return this.accountsService.findAll(filter);
   }
@@ -73,8 +74,7 @@ export class AccountsController {
     examples: {
       account_1: {
         value: {
-          firstname: 'Cuong',
-          lastname: 'Nguyen',
+          fullname: 'Nguyen Cuong',
           phonenumber: '0962458201',
           password: 'Cuong1912!',
           gender: `${GENDER.Male}`,
