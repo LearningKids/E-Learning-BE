@@ -1,8 +1,8 @@
 import {
+  BadRequestException,
   HttpException,
   HttpStatus,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
@@ -20,7 +20,7 @@ import { EmailService } from '../mail/mail.service';
 
 @Injectable()
 export class AccountsService {
-  subjectMail = 'Mail Forgot Password from E-Learning-Kids';
+  subjectMail = 'E-Learning-Kids send New Password to you';
   constructor(
     @InjectModel(Account.name)
     private readonly accountModel: PaginateModel<Account>,
@@ -96,7 +96,7 @@ export class AccountsService {
     await this.accountModel
       .findOneAndUpdate({ _id: id }, { deleted_at: Date.now() })
       .exec();
-    return 'Delete sucess';
+    throw new HttpException('Delete sucess', HttpStatus.OK);
   }
 
   //! forgot password
@@ -107,10 +107,29 @@ export class AccountsService {
     await this.getAccountByEmail(email);
     await this.accountModel.findOneAndUpdate(
       { email },
-      { password: newPassword },
+      { password: newPassword, refreshToken: null },
     );
     this.emailService.sendEmail(email, this.subjectMail, passwordUser);
-    return 'Send mail forgot password success';
+    throw new HttpException('Send mail forgot password success', HttpStatus.OK);
+  }
+  //! change password
+  async changePassword(password: string, newpassword: string, email: string) {
+    const account = await this.accountModel
+      .findOne({ email })
+      .select('+password');
+    const checkPassword = await this.authService.generateFunc(
+      password,
+      account.password,
+    );
+    if (!checkPassword) {
+      throw new BadRequestException('Password incorect');
+    }
+    const passwordCover = await this.authService.hashFunc(newpassword);
+    await this.accountModel.findOneAndUpdate(
+      { email },
+      { password: passwordCover, refreshToken: null },
+    );
+    throw new HttpException('Change password success', HttpStatus.OK);
   }
   //! Find Account by Email
   async getAccountByEmail(email: string): Promise<Account> {
