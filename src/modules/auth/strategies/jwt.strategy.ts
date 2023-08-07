@@ -15,10 +15,10 @@ export class JwtAccessTokenStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: IToken) {
-    const acount = await this.authService.getAccountByEmail(payload.email);
+    const account = await this.authService.getAccountByEmail(payload.email);
     return {
-      acount,
-      role: acount.role,
+      account,
+      role: account.role,
     };
   }
 }

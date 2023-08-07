@@ -10,6 +10,7 @@ import {
   Put,
   Query,
   HttpCode,
+  Req,
 } from '@nestjs/common';
 import { AccountsService } from './accounts.service';
 import { UpdateAccountDto } from './dto/update-account.dto';
@@ -120,5 +121,20 @@ export class AccountsController {
   @ApiQuery({ name: 'email', required: true, type: String })
   forgotPassword(@Query('email') email: string) {
     return this.accountsService.forgotPassword(email);
+  }
+  //! change password
+  @Put(routes.changePassword)
+  @ApiQuery({ name: 'password', required: true, type: String })
+  @ApiQuery({ name: 'newpassword', required: true, type: String })
+  changePassword(
+    @Query('password') password: string,
+    @Query('newpassword') newpassword: string,
+    @Req() request: any,
+  ) {
+    return this.accountsService.changePassword(
+      password,
+      newpassword,
+      request.user.account?.email,
+    );
   }
 }

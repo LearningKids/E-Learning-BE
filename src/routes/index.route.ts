@@ -2,6 +2,7 @@ const routes = {
   //! account
   account: 'accounts',
   forgotPassword: 'forgotpassword',
+  changePassword: 'changepassword',
   block: 'block',
   //! auth
   register: 'register',
