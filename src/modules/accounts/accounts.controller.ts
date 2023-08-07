@@ -9,6 +9,7 @@ import {
   Post,
   Put,
   Query,
+  HttpCode,
 } from '@nestjs/common';
 import { AccountsService } from './accounts.service';
 import { UpdateAccountDto } from './dto/update-account.dto';
@@ -103,7 +104,7 @@ export class AccountsController {
       },
     },
   })
-  @Put(':id/block')
+  @Put(`:id/${routes.block}`)
   blockAccount(@Param('id') id: string, @Body() isBlock: BlockAccountDto) {
     return this.accountsService.blockAccount(id, isBlock);
   }
@@ -111,5 +112,13 @@ export class AccountsController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.accountsService.remove(id);
+  }
+  //! forgot password
+  @HttpCode(200)
+  @Public()
+  @Post(routes.forgotPassword)
+  @ApiQuery({ name: 'email', required: true, type: String })
+  forgotPassword(@Query('email') email: string) {
+    return this.accountsService.forgotPassword(email);
   }
 }

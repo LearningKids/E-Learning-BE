@@ -11,6 +11,7 @@ import { Account, AccountSchema } from './entities/account.entity';
 import { EmailExistsMiddleware } from 'src/middlewares/checkExists/checkEmailExists.middleware';
 import routes from 'src/routes/index.route';
 import { AuthModule } from '../auth/auth.module';
+import { EmailModule } from '../mail/mail.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { AuthModule } from '../auth/auth.module';
       },
     ]),
     AuthModule,
+    EmailModule,
   ],
   controllers: [AccountsController],
   providers: [AccountsService],

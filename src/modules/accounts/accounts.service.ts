@@ -2,8 +2,10 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
+import { v4 as uuidv4 } from 'uuid';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
 import { Account } from './entities/account.entity';
@@ -14,13 +16,16 @@ import paginationQuery from 'src/pagination';
 import { FilterAccountDto } from './dto/filter-account.dto';
 import queryFilters from 'src/pagination/filters';
 import { AuthService } from '../auth/auth.service';
+import { EmailService } from '../mail/mail.service';
 
 @Injectable()
 export class AccountsService {
+  subjectMail = 'Mail Forgot Password from E-Learning-Kids';
   constructor(
     @InjectModel(Account.name)
     private readonly accountModel: PaginateModel<Account>,
     private authService: AuthService,
+    private emailService: EmailService,
   ) {}
   //! create
   async create(createAccountDto: CreateAccountDto) {
@@ -88,16 +93,30 @@ export class AccountsService {
     if (!account) {
       throw new NotFoundException(`${id} not Found`);
     }
-    const accountDelete = await this.accountModel
+    await this.accountModel
       .findOneAndUpdate({ _id: id }, { deleted_at: Date.now() })
       .exec();
     return 'Delete sucess';
+  }
+
+  //! forgot password
+  async forgotPassword(email: string) {
+    const UUID: string = uuidv4();
+    const passwordUser = UUID.split('-')[0];
+    const newPassword = await this.authService.hashFunc(passwordUser);
+    await this.getAccountByEmail(email);
+    await this.accountModel.findOneAndUpdate(
+      { email },
+      { password: newPassword },
+    );
+    this.emailService.sendEmail(email, this.subjectMail, passwordUser);
+    return 'Send mail forgot password success';
   }
   //! Find Account by Email
   async getAccountByEmail(email: string): Promise<Account> {
     const account = await this.accountModel.findOne({ email });
     if (!account) {
-      throw new HttpException(`${email} not found `, HttpStatus.NOT_FOUND);
+      throw new NotFoundException(`${email} not found`);
     }
     return account;
   }
