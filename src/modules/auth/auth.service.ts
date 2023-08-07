@@ -3,6 +3,7 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
+  InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
@@ -13,15 +14,17 @@ import { Account } from 'src/modules/accounts/entities/account.entity';
 import baseRoles from 'src/helpers/baseRole';
 import { JwtService } from '@nestjs/jwt';
 import { IToken } from 'src/interfaces/Token.interface';
-// import { MailService } from '../mail/mail.service';
+import { EmailService } from '../mail/mail.service';
 import { roleNames } from 'src/core/constants';
 @Injectable()
 export class AuthService {
   saltOrRounds = 10;
+  subjectMail = 'Mail verify account from E-Learning-Kids';
   constructor(
     @InjectModel(Account.name) private readonly accountModel: Model<Account>,
     @InjectConnection() private connection: Connection,
-    private jwtService: JwtService, // private mailService: MailService,
+    private jwtService: JwtService,
+    private mailService: EmailService,
   ) {}
   //! register
   async register(registerDto: RegisterDto): Promise<Account> {
@@ -29,15 +32,15 @@ export class AuthService {
       const roleStudent_Trial = baseRoles.find(
         (role) => role.roleName === roleNames.student_trial,
       );
-      console.log(roleStudent_Trial);
       const hashPassword = await this.hashFunc(registerDto.password);
       registerDto.password = hashPassword;
       registerDto.role = roleStudent_Trial.id;
       const createdAccount = new this.accountModel(registerDto);
-      // this.mailService.sendUserConfirmation(createdAccount.email, '123');
-      return createdAccount.save();
+      const accountSuccess = await createdAccount.save();
+      this.mailService.sendEmail(registerDto.email, this.subjectMail, '111');
+      return accountSuccess;
     } catch (error) {
-      console.log(error);
+      throw new InternalServerErrorException();
     }
   }
   //! login

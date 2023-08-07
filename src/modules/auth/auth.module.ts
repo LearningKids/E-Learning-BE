@@ -4,16 +4,17 @@ import { AuthController } from './auth.controller';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { LocalStrategy } from './strategies/local.strategy';
-import { MongooseModule, getConnectionToken } from '@nestjs/mongoose';
+import { MongooseModule } from '@nestjs/mongoose';
 import {
   Account,
   AccountSchema,
 } from 'src/modules/accounts/entities/account.entity';
-import { EmailExistsMiddleware } from 'src/middlewares/checkExists/checkEmailExists.middleware';
-import routes from 'src/routes/index.route';
+
 import { JwtAccessTokenStrategy } from './strategies/jwt.strategy';
 import { JwtRefreshTokenStrategy } from './strategies/jwt-refreshToken.strategy';
-import { MailModule } from '../mail/mail.module';
+import { EmailModule } from '../mail/mail.module';
+import { EmailExistsMiddleware } from 'src/middlewares/checkExists/checkEmailExists.middleware';
+import routes from 'src/routes/index.route';
 
 @Module({
   imports: [
@@ -28,8 +29,7 @@ import { MailModule } from '../mail/mail.module';
       secret: `${process.env.jwt_secret}`,
       signOptions: { expiresIn: '3600s' },
     }),
-
-    // MailModule,
+    EmailModule,
   ],
   controllers: [AuthController],
   providers: [
@@ -38,10 +38,11 @@ import { MailModule } from '../mail/mail.module';
     JwtAccessTokenStrategy,
     JwtRefreshTokenStrategy,
   ],
+  exports: [AuthService],
 })
-export class AuthModule {}
-// export class AuthModule implements NestModule {
-//   configure(consumer: MiddlewareConsumer) {
-//     consumer.apply(EmailExistsMiddleware).forRoutes(`${routes.register}`);
-//   }
-// }
+// export class AuthModule {}
+export class AuthModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(EmailExistsMiddleware).forRoutes(`${routes.register}`);
+  }
+}
