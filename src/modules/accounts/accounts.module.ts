@@ -10,6 +10,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Account, AccountSchema } from './entities/account.entity';
 import { EmailExistsMiddleware } from 'src/middlewares/checkExists/checkEmailExists.middleware';
 import routes from 'src/routes/index.route';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import routes from 'src/routes/index.route';
         schema: AccountSchema,
       },
     ]),
+    AuthModule,
   ],
   controllers: [AccountsController],
   providers: [AccountsService],

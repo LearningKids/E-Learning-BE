@@ -9,21 +9,24 @@ import { UpdateAccountDto } from './dto/update-account.dto';
 import { Account } from './entities/account.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { PaginateModel } from 'mongoose';
-import { hashFunc } from 'src/middlewares/bcrypt/bcrypt.middleware';
 import { BlockAccountDto } from './dto/block-account.dto';
 import paginationQuery from 'src/pagination';
 import { FilterAccountDto } from './dto/filter-account.dto';
 import queryFilters from 'src/pagination/filters';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class AccountsService {
   constructor(
     @InjectModel(Account.name)
     private readonly accountModel: PaginateModel<Account>,
+    private authService: AuthService,
   ) {}
   //! create
   async create(createAccountDto: CreateAccountDto) {
-    const hashPassword = await hashFunc(createAccountDto.password);
+    const hashPassword = await this.authService.hashFunc(
+      createAccountDto.password,
+    );
     createAccountDto.password = hashPassword;
     const createdAccount = new this.accountModel(createAccountDto);
     return createdAccount.save();

@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import { BaseEntity } from 'src/shared/base/base.entity';
 import * as panigate from 'mongoose-paginate-v2';
+import { IsEmail, IsUUID } from 'class-validator';
 export enum GENDER {
   Male = 'MALE',
   Female = 'FEMALE',
@@ -9,6 +10,7 @@ export enum GENDER {
 }
 @Schema({ versionKey: false, timestamps: true })
 export class Account extends BaseEntity {
+  @IsEmail({}, { message: 'Email is invalid' })
   @Prop({
     unique: true,
     required: true,
@@ -18,7 +20,7 @@ export class Account extends BaseEntity {
   })
   email: string;
 
-  @Prop({ required: true, trim: true, minlength: 10, maxlength: 150 })
+  @Prop({ required: true, trim: true, minlength: 5, maxlength: 150 })
   fullname: string;
 
   @Prop({
