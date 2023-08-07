@@ -65,7 +65,7 @@ export class AuthController {
   }
 
   @HttpCode(200)
-  @Post('refreshToken')
+  @Post(routes.refreshtoken)
   @ApiBody({ schema: { properties: { refreshToken: { type: 'string' } } } })
   async refreshAccessToken(@Body() refreshTokenDto: RefreshTokenDto) {
     const { refreshToken } = refreshTokenDto;
