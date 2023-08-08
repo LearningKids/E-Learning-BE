@@ -3,6 +3,10 @@ import { HydratedDocument } from 'mongoose';
 import { BaseEntity } from 'src/shared/base/base.entity';
 import * as panigate from 'mongoose-paginate-v2';
 import { IsEmail } from 'class-validator';
+import {
+  AutoIncrementID,
+  AutoIncrementIDOptions,
+} from '@typegoose/auto-increment';
 export enum GENDER {
   Male = 'MALE',
   Female = 'FEMALE',
@@ -10,6 +14,9 @@ export enum GENDER {
 }
 @Schema({ versionKey: false, timestamps: true })
 export class Account extends BaseEntity {
+  @Prop({ type: Number })
+  id: number;
+
   @IsEmail({}, { message: 'Email is invalid' })
   @Prop({
     unique: true,
@@ -68,4 +75,8 @@ export class Account extends BaseEntity {
 export type AccountDocument = HydratedDocument<Account>;
 
 export const AccountSchema = SchemaFactory.createForClass(Account);
+AccountSchema.plugin(AutoIncrementID, {
+  field: 'id',
+  startAt: 1,
+} as AutoIncrementIDOptions);
 AccountSchema.plugin(panigate);

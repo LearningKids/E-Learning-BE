@@ -41,17 +41,17 @@ export class LessonsController {
   //! detail
   @Get(':id')
   @ResponseMessage('Succesfully')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: number) {
     return this.lessonsService.findOne(id);
   }
   //! update
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateLessonDto: UpdateLessonDto) {
+  update(@Param('id') id: number, @Body() updateLessonDto: UpdateLessonDto) {
     return this.lessonsService.update(id, updateLessonDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: number) {
     return this.lessonsService.remove(id);
   }
 }
