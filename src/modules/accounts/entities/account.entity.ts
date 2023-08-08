@@ -77,6 +77,6 @@ export type AccountDocument = HydratedDocument<Account>;
 export const AccountSchema = SchemaFactory.createForClass(Account);
 AccountSchema.plugin(AutoIncrementID, {
   field: 'id',
-  startAt: 1,
+  startAt: 5,
 } as AutoIncrementIDOptions);
 AccountSchema.plugin(panigate);
