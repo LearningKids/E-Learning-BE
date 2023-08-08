@@ -11,6 +11,7 @@ export const accessRole = {
   accessStudent_Trial: [
     roleNames.admin,
     roleNames.teacher,
+    roleNames.student,
     roleNames.student_trial,
   ],
 };

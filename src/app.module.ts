@@ -4,6 +4,7 @@ import { database_config } from './configs/configuaration.config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AccountsModule } from './modules/accounts/accounts.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { LessonsModule } from './modules/lessons/lessons.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -21,6 +22,7 @@ import { AuthModule } from './modules/auth/auth.module';
     }),
     AccountsModule,
     AuthModule,
+    LessonsModule,
   ],
   controllers: [],
   providers: [],

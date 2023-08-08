@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import { BaseEntity } from 'src/shared/base/base.entity';
 import * as panigate from 'mongoose-paginate-v2';
-import { IsEmail, IsUUID } from 'class-validator';
+import { IsEmail } from 'class-validator';
 export enum GENDER {
   Male = 'MALE',
   Female = 'FEMALE',
