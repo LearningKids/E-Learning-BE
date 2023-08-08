@@ -3,6 +3,7 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
@@ -48,7 +49,9 @@ export class AccountsService {
     try {
       const account = await this.accountModel.findById(id);
       return account;
-    } catch (error) {}
+    } catch (error) {
+      throw new InternalServerErrorException('Server Error');
+    }
   }
   //! update
   async update(

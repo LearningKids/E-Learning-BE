@@ -9,11 +9,11 @@ const queryFilters = (dataFilter: any) => {
       filters.push(filter);
     }
   });
-
+  filters.push({ deleted_at: null });
   if (filters.length > 0) {
     return { $or: filters };
   } else {
-    return {};
+    return { deleted_at: null };
   }
 };
 

@@ -8,6 +8,8 @@ const routes = {
   register: 'register',
   login: 'login',
   refreshtoken: 'refreshtoken',
+  //! lesson
+  lesson: 'lesson',
 };
 
 export default routes;

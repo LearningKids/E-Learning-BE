@@ -24,6 +24,7 @@ import { RolesGuard } from '../auth/guards/role.guard';
 import { Roles, accessRole } from 'src/decorators/roles.decorators';
 import { Public } from 'src/decorators/auth.decorators';
 import { FilterAccountDto } from './dto/filter-account.dto';
+import { ResponseMessage } from 'src/decorators/response.decorators';
 
 @Controller(`${routes.account}`)
 @ApiTags(`${routes.account}`)
@@ -49,6 +50,8 @@ export class AccountsController {
       },
     },
   })
+  @Roles(accessRole.accessAdmin)
+  @UseGuards(RolesGuard)
   create(@Body() createAccountDto: CreateAccountDto) {
     return this.accountsService.create(createAccountDto);
   }
@@ -56,16 +59,12 @@ export class AccountsController {
   @Get()
   @Roles(accessRole.accessAdmin)
   @UseGuards(RolesGuard)
-  @UseGuards(JwtAccessTokenGuard)
-  @ApiQuery({ name: 'page', required: false, type: Number })
-  @ApiQuery({ name: 'page_size', required: false, type: Number })
-  @ApiQuery({ name: 'email', required: false, type: String })
-  @ApiQuery({ name: 'fullname', required: false, type: String })
   findAll(@Query() filter: FilterAccountDto) {
     return this.accountsService.findAll(filter);
   }
   //! get detail
   @Get(':id')
+  @ResponseMessage('Succesfully')
   findOne(@Param('id') id: string) {
     return this.accountsService.findOne(id);
   }

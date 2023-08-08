@@ -2,24 +2,14 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
 import { PaginationDto } from 'src/pagination/dto/index.dto';
-export class FilterAccountDto extends PaginationDto {
+export class FilterLessontDto extends PaginationDto {
   @IsOptional()
   @Type(() => String)
   @IsString()
   @ApiProperty({
     type: String,
-    name: 'email',
     required: false,
+    name: 'lesson_name',
   })
-  email: string;
-
-  @IsOptional()
-  @Type(() => String)
-  @IsString()
-  @ApiProperty({
-    type: String,
-    name: 'fullname',
-    required: false,
-  })
-  fullname: string;
+  lesson_name: string;
 }
