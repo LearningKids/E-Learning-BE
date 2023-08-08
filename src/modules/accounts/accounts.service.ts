@@ -45,9 +45,9 @@ export class AccountsService {
     return accounts;
   }
   //! detail
-  async findOne(id: string): Promise<Account> {
+  async findOne(id: number): Promise<Account> {
     try {
-      const account = await this.accountModel.findById(id);
+      const account = await this.accountModel.findOne({ id }).exec();
       return account;
     } catch (error) {
       throw new InternalServerErrorException('Server Error');
@@ -55,16 +55,16 @@ export class AccountsService {
   }
   //! update
   async update(
-    id: string,
+    id: number,
     updateAccountDto: UpdateAccountDto,
   ): Promise<Account> {
     try {
-      const account = await this.accountModel.findById(id);
+      const account = await this.accountModel.findOne({ id }).exec();
       if (!account) {
         throw new NotFoundException(`${id} not Found`);
       }
       const accountUpdate = await this.accountModel
-        .findOneAndUpdate({ _id: id }, updateAccountDto, { new: true })
+        .findOneAndUpdate({ id: id }, updateAccountDto, { new: true })
         .exec();
       return accountUpdate;
     } catch (error) {
@@ -72,15 +72,15 @@ export class AccountsService {
     }
   }
   //! block
-  async blockAccount(id: string, dataBlock: BlockAccountDto) {
+  async blockAccount(id: number, dataBlock: BlockAccountDto) {
     try {
-      const account = await this.accountModel.findById(id).exec();
+      const account = await this.accountModel.findOne({ id }).exec();
       if (!account) {
         throw new NotFoundException(`${id} not Found`);
       }
       const accountBlock = await this.accountModel
         .findOneAndUpdate(
-          { _id: id },
+          { id: id },
           { isBlock: dataBlock.isBlock },
           { new: true },
         )
@@ -92,12 +92,12 @@ export class AccountsService {
   }
   //! remove
   async remove(id: string) {
-    const account = await this.accountModel.findById(id).exec();
+    const account = await this.accountModel.findOne({ id }).exec();
     if (!account) {
       throw new NotFoundException(`${id} not Found`);
     }
     await this.accountModel
-      .findOneAndUpdate({ _id: id }, { deleted_at: Date.now() })
+      .findOneAndUpdate({ id: id }, { deleted_at: Date.now() })
       .exec();
     throw new HttpException('Delete sucess', HttpStatus.OK);
   }
@@ -119,7 +119,8 @@ export class AccountsService {
   async changePassword(password: string, newpassword: string, email: string) {
     const account = await this.accountModel
       .findOne({ email })
-      .select('+password');
+      .select('+password')
+      .exec();
     const checkPassword = await this.authService.generateFunc(
       password,
       account.password,
@@ -136,7 +137,7 @@ export class AccountsService {
   }
   //! Find Account by Email
   async getAccountByEmail(email: string): Promise<Account> {
-    const account = await this.accountModel.findOne({ email });
+    const account = await this.accountModel.findOne({ email }).exec();
     if (!account) {
       throw new NotFoundException(`${email} not found`);
     }

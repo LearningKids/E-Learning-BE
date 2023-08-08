@@ -3,9 +3,16 @@ import { BaseEntity } from 'src/shared/base/base.entity';
 import * as panigate from 'mongoose-paginate-v2';
 import { LESSON_TYPE, SUBJECT } from 'src/core/constants';
 import { HydratedDocument } from 'mongoose';
+import {
+  AutoIncrementID,
+  AutoIncrementIDOptions,
+} from '@typegoose/auto-increment';
 
 @Schema({ versionKey: false, timestamps: true })
 export class Lesson extends BaseEntity {
+  @Prop({ type: Number })
+  id: number;
+
   @Prop({
     required: true,
     unique: true,
@@ -54,4 +61,8 @@ export class Lesson extends BaseEntity {
 export type LessonDocument = HydratedDocument<Lesson>;
 
 export const LessonSchema = SchemaFactory.createForClass(Lesson);
+LessonSchema.plugin(AutoIncrementID, {
+  field: 'id',
+  startAt: 1,
+} as AutoIncrementIDOptions);
 LessonSchema.plugin(panigate);

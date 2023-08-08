@@ -65,7 +65,7 @@ export class AccountsController {
   //! get detail
   @Get(':id')
   @ResponseMessage('Succesfully')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: number) {
     return this.accountsService.findOne(id);
   }
   //! update
@@ -85,7 +85,7 @@ export class AccountsController {
       },
     },
   })
-  update(@Param('id') id: string, @Body() updateAccountDto: UpdateAccountDto) {
+  update(@Param('id') id: number, @Body() updateAccountDto: UpdateAccountDto) {
     return this.accountsService.update(id, updateAccountDto);
   }
   //! block
@@ -105,7 +105,7 @@ export class AccountsController {
     },
   })
   @Put(`:id/${routes.block}`)
-  blockAccount(@Param('id') id: string, @Body() isBlock: BlockAccountDto) {
+  blockAccount(@Param('id') id: number, @Body() isBlock: BlockAccountDto) {
     return this.accountsService.blockAccount(id, isBlock);
   }
   //! delete
