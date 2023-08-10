@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AccountsModule } from './modules/accounts/accounts.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { LessonsModule } from './modules/lessons/lessons.module';
+import { CoursesModule } from './modules/courses/courses.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -20,9 +21,10 @@ import { LessonsModule } from './modules/lessons/lessons.module';
       }),
       inject: [ConfigService],
     }),
-    AccountsModule,
     AuthModule,
+    AccountsModule,
     LessonsModule,
+    CoursesModule,
   ],
   controllers: [],
   providers: [],

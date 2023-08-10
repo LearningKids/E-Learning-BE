@@ -20,7 +20,6 @@ export class JwtRefreshTokenStrategy extends PassportStrategy(
   }
 
   async validate(request: Request, payload?: IToken) {
-    console.log(request);
     return await this.authService.refreshTokenMatchWithAccount(
       payload.email,
       request.headers.authorization.split('Bearer ')[1],

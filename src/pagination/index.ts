@@ -12,8 +12,13 @@ const myCustomLabels = {
   hasNextPage: false,
 };
 
-const paginationQuery = (page = 1, page_size = 10) => {
-  return { page, limit: page_size, customLabels: myCustomLabels };
+const paginationQuery = (page = 1, page_size = 10, populate?: string[]) => {
+  return {
+    page: page,
+    limit: page_size,
+    customLabels: myCustomLabels,
+    populate,
+  };
 };
 
 export default paginationQuery;

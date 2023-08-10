@@ -14,7 +14,7 @@ export enum GENDER {
 }
 @Schema({ versionKey: false, timestamps: true })
 export class Account extends BaseEntity {
-  @Prop({ type: Number })
+  @Prop({ type: Number, unique: true })
   id: number;
 
   @IsEmail({}, { message: 'Email is invalid' })

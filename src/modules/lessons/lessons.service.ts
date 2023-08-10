@@ -59,7 +59,7 @@ export class LessonsService {
       throw new InternalServerErrorException('Server Error');
     }
   }
-
+  //! remove
   async remove(id: number) {
     const account = await this.lessonModel.findOne({ id }).exec();
     if (!account) {
