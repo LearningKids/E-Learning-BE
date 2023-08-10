@@ -9,9 +9,15 @@ const queryFilters = (dataFilter: any) => {
       filters.push(filter);
     }
   });
-  filters.push({ deleted_at: null });
+
+  const finalFilters = [];
   if (filters.length > 0) {
-    return { $or: filters };
+    finalFilters.push({ $or: filters });
+  }
+  finalFilters.push({ deleted_at: null }); // Thêm bộ lọc deleted_at == null
+
+  if (finalFilters.length > 0) {
+    return { $and: finalFilters };
   } else {
     return { deleted_at: null };
   }

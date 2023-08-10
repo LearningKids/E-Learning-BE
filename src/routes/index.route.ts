@@ -10,6 +10,8 @@ const routes = {
   refreshtoken: 'refreshtoken',
   //! lesson
   lesson: 'lesson',
+  //! course
+  course: 'course',
 };
 
 export default routes;

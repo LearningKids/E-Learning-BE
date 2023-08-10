@@ -10,7 +10,7 @@ import {
 
 @Schema({ versionKey: false, timestamps: true })
 export class Lesson extends BaseEntity {
-  @Prop({ type: Number })
+  @Prop({ type: Number, unique: true })
   id: number;
 
   @Prop({
