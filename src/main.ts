@@ -18,8 +18,6 @@ async function bootstrap() {
   const port_env = config_service.get('PORT');
   console.log(port_env);
   logger.debug(`http://localhost:${port_env}/${URL_SWAGGER}`);
-  logger.debug(join(__dirname, '/modules/templates/'));
-  logger.debug(process.env.NODE_ENV);
   await app.listen(port_env);
 }
 bootstrap();

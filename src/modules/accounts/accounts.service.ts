@@ -135,6 +135,15 @@ export class AccountsService {
     );
     throw new HttpException('Change password success', HttpStatus.OK);
   }
+  //! upload avatar
+  async uploadAvatar(email: string, avatar: string) {
+    await this.accountModel.findOneAndUpdate(
+      { email },
+      { avatar: avatar },
+      { new: true },
+    );
+    return 'Update avatar success';
+  }
   //! Find Account by Email
   async getAccountByEmail(email: string): Promise<Account> {
     const account = await this.accountModel.findOne({ email }).exec();
