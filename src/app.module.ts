@@ -6,6 +6,8 @@ import { AccountsModule } from './modules/accounts/accounts.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { LessonsModule } from './modules/lessons/lessons.module';
 import { CoursesModule } from './modules/courses/courses.module';
+import { ServeStaticModule } from '@nestjs/serve-static/dist/serve-static.module';
+import { join } from 'path';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -20,6 +22,9 @@ import { CoursesModule } from './modules/courses/courses.module';
         dbName: configService.get<string>('DATABASE_NAME'),
       }),
       inject: [ConfigService],
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..'),
     }),
     AuthModule,
     AccountsModule,

@@ -11,6 +11,8 @@ import {
   Query,
   HttpCode,
   Req,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { AccountsService } from './accounts.service';
 import { UpdateAccountDto } from './dto/update-account.dto';
@@ -25,6 +27,8 @@ import { Roles, accessRole } from 'src/decorators/roles.decorators';
 import { Public } from 'src/decorators/auth.decorators';
 import { FilterAccountDto } from './dto/filter-account.dto';
 import { ResponseMessage } from 'src/decorators/response.decorators';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { multerStorage } from '../../configs/multer.config';
 
 @Controller(`${routes.account}`)
 @ApiTags(`${routes.account}`)
@@ -135,5 +139,12 @@ export class AccountsController {
       newpassword,
       request.user.account?.email,
     );
+  }
+  //! upload avater
+  @Put('avatar')
+  @UseInterceptors(FileInterceptor('avatar', multerStorage))
+  changeAvatar(@Req() req: any, @UploadedFile() file: Express.Multer.File) {
+    const { email } = req.user.account;
+    return this.accountsService.uploadAvatar(email, file.path);
   }
 }
