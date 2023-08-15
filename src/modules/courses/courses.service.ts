@@ -31,9 +31,8 @@ export class CoursesService {
       'content_lesson',
     ]);
     const filters = queryFilters(pagination);
-    const query = await this.courseModel.paginate(filters, options);
-
-    return query;
+    const courses = await this.courseModel.paginate(filters, options);
+    return courses;
   }
   //! detail
   async findOne(id: number) {

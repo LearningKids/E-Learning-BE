@@ -8,6 +8,9 @@ import { LessonsModule } from './modules/lessons/lessons.module';
 import { CoursesModule } from './modules/courses/courses.module';
 import { ServeStaticModule } from '@nestjs/serve-static/dist/serve-static.module';
 import { join } from 'path';
+import { ImagesupModule } from './modules/imagesup/imagesup.module';
+import { UploadModule } from './modules/upload/upload.module';
+import { QuestionsModule } from './modules/questions/questions.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -30,6 +33,9 @@ import { join } from 'path';
     AccountsModule,
     LessonsModule,
     CoursesModule,
+    ImagesupModule,
+    UploadModule,
+    QuestionsModule,
   ],
   controllers: [],
   providers: [],
