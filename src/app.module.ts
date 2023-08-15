@@ -10,6 +10,7 @@ import { ServeStaticModule } from '@nestjs/serve-static/dist/serve-static.module
 import { join } from 'path';
 import { ImagesupModule } from './modules/imagesup/imagesup.module';
 import { UploadModule } from './modules/upload/upload.module';
+import { QuestionsModule } from './modules/questions/questions.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -34,6 +35,7 @@ import { UploadModule } from './modules/upload/upload.module';
     CoursesModule,
     ImagesupModule,
     UploadModule,
+    QuestionsModule,
   ],
   controllers: [],
   providers: [],

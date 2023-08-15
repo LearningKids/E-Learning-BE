@@ -23,3 +23,7 @@ export enum SUBJECT {
   Math = 'MATH',
   English = 'ENGLISH',
 }
+
+export enum QUESTION_TYPE {
+  compare = 'COMPARE',
+}

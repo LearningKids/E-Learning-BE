@@ -14,6 +14,8 @@ const routes = {
   course: 'course',
   //! image sup
   imagesup: 'imagesup',
+  //! question
+  question: 'question',
 };
 
 export default routes;
