@@ -45,27 +45,8 @@ export class QuestionsService {
       },
     ]);
     const filters = queryFilters(pagination);
-    const lessons = await this.questionModel.paginate(filters, options);
-    return lessons;
-    // return this.questionModel
-    //   .find()
-    //   .populate({
-    //     path: 'question_sup.question_meta.image_sup',
-    //     select: '-deleted_at -createdAt -updatedAt',
-    //   })
-    //   .populate({
-    //     path: 'question_sup.answer_correct.image_sup',
-    //     select: '-deleted_at -createdAt -updatedAt',
-    //   })
-    //   .populate({
-    //     path: 'question_sup.answer_system.image_sup',
-    //     select: '-deleted_at -createdAt -updatedAt',
-    //   })
-    //   .populate({
-    //     path: 'question_sup.answer_check.image_sup',
-    //     select: '-deleted_at -createdAt -updatedAt',
-    //   })
-    //   .exec();
+    const questions = await this.questionModel.paginate(filters, options);
+    return questions;
   }
 
   async findOne(id: number) {
