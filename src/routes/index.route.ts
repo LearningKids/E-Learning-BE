@@ -12,6 +12,8 @@ const routes = {
   lesson: 'lesson',
   //! course
   course: 'course',
+  //! image sup
+  imagesup: 'imagesup',
 };
 
 export default routes;

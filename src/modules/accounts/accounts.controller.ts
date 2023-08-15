@@ -29,6 +29,7 @@ import { FilterAccountDto } from './dto/filter-account.dto';
 import { ResponseMessage } from 'src/decorators/response.decorators';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { multerStorage } from '../../configs/multer.config';
+import { UploadAvatarDto } from './dto/upload-avatar.dto';
 
 @Controller(`${routes.account}`)
 @ApiTags(`${routes.account}`)
@@ -142,9 +143,8 @@ export class AccountsController {
   }
   //! upload avater
   @Put('avatar')
-  @UseInterceptors(FileInterceptor('avatar', multerStorage))
-  changeAvatar(@Req() req: any, @UploadedFile() file: Express.Multer.File) {
+  changeAvatar(@Req() req: any, @Body() upload: UploadAvatarDto) {
     const { email } = req.user.account;
-    return this.accountsService.uploadAvatar(email, file.path);
+    return this.accountsService.uploadAvatar(email, upload.avatar);
   }
 }

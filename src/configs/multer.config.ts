@@ -1,4 +1,4 @@
-import { extname, join } from 'path';
+import { extname } from 'path';
 import { existsSync, mkdirSync } from 'fs';
 import { diskStorage } from 'multer';
 import { v4 as uuid } from 'uuid';
@@ -24,7 +24,7 @@ export const multerStorage = {
   storage: diskStorage({
     destination: (req: any, file: any, cb: any) => {
       // Create folder if doesn't exist
-      const subfolder = file.fieldname;
+      const subfolder = req.params.folderStorage;
       const folder = getDynamicFolder(subfolder);
       if (!existsSync(folder)) {
         mkdirSync(folder);
