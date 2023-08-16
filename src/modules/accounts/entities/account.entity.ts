@@ -39,7 +39,7 @@ export class Account extends BaseEntity {
   })
   password: string;
 
-  @Prop({ required: true, match: /^([+]\d{2})?\d{10}$/ })
+  @Prop({ required: true, unique: true, match: /^([+]\d{2})?\d{10}$/ })
   phonenumber: string;
 
   @Prop({

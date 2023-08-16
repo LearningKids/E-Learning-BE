@@ -27,3 +27,8 @@ export enum SUBJECT {
 export enum QUESTION_TYPE {
   compare = 'COMPARE',
 }
+export enum EXCERCISE_TYPE {
+  test = 'TEST',
+  homework = 'HOMEWORK',
+  trial_learning = 'TRIAL_LEARNING',
+}

@@ -55,8 +55,8 @@ export class CoursesService {
   }
 
   async remove(id: number) {
-    const account = await this.courseModel.findOne({ id }).exec();
-    if (!account) {
+    const course = await this.courseModel.findOne({ id }).exec();
+    if (!course) {
       throw new NotFoundException(`${id} not Found`);
     }
     await this.courseModel

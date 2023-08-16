@@ -11,6 +11,7 @@ import { join } from 'path';
 import { ImagesupModule } from './modules/imagesup/imagesup.module';
 import { UploadModule } from './modules/upload/upload.module';
 import { QuestionsModule } from './modules/questions/questions.module';
+import { ExcercisesModule } from './modules/excercises/excercises.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -36,6 +37,7 @@ import { QuestionsModule } from './modules/questions/questions.module';
     ImagesupModule,
     UploadModule,
     QuestionsModule,
+    ExcercisesModule,
   ],
   controllers: [],
   providers: [],
