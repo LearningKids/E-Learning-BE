@@ -68,10 +68,23 @@ export class AuthService {
   async getAccountByEmail(email: string): Promise<Account> {
     return await this.accountModel.findOne({ email });
   }
+  //! get by email or phone
+  async getAccountByEmailorPhone(identifier: string): Promise<Account> {
+    console.log(identifier);
+    return await this.accountModel
+      .findOne()
+      .or([{ email: identifier }, { phonenumber: identifier }])
+      .exec();
+  }
+
   //! check password
-  async validateAccount(email: string, password: string): Promise<Account> {
+  async validateAccount(
+    identifier: string,
+    password: string,
+  ): Promise<Account> {
     const account = await this.accountModel
-      .findOne({ email })
+      .findOne()
+      .or([{ email: identifier }, { phonenumber: identifier }])
       .select('+password');
     if (account && (await this.generateFunc(password, account.password))) {
       return account;

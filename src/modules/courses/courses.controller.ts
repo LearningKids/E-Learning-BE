@@ -17,7 +17,7 @@ import { FilterCourseDto } from './dto/filter-course.dto';
 import { ResponseMessage } from 'src/decorators/response.decorators';
 
 @ApiTags(`${routes.course}`)
-@Controller('courses')
+@Controller(`${routes.course}`)
 export class CoursesController {
   constructor(private readonly coursesService: CoursesService) {}
   //! post

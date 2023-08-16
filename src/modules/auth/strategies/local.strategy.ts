@@ -12,13 +12,15 @@ import {
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
   constructor(private readonly authService: AuthService) {
-    super({ usernameField: 'email' }); // Mặc định là username, đổi sang email
+    super({ usernameField: 'identifier' }); // Mặc định là username, đổi sang email
   }
 
-  async validate(email: string, password: string) {
-    const checkAccount = await this.authService.getAccountByEmail(email);
+  async validate(identifier: string, password: string) {
+    const checkAccount = await this.authService.getAccountByEmailorPhone(
+      identifier,
+    );
     if (!checkAccount) {
-      throw new NotFoundException('Email not found');
+      throw new NotFoundException('Account not found');
     }
     if (checkAccount.deleted_at != null) {
       throw new HttpException('Account is not active', HttpStatus.OK);
@@ -26,7 +28,13 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     if (checkAccount.isBlock) {
       throw new HttpException('Account was block', HttpStatus.OK);
     }
-    const account = await this.authService.validateAccount(email, password);
+    // if (!checkAccount.isVerify) {
+    //   throw new HttpException('Account unauthenticated', HttpStatus.OK);
+    // }
+    const account = await this.authService.validateAccount(
+      identifier,
+      password,
+    );
     if (!account) {
       throw new UnauthorizedException();
     }

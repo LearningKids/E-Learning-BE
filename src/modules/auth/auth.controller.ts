@@ -54,7 +54,7 @@ export class AuthController {
     examples: {
       account_1: {
         value: {
-          email: 'cuongng1912@gmail.com',
+          identifier: 'cuongng1912@gmail.com',
           password: 'Cuong1912!',
         } as LoginDto,
       },

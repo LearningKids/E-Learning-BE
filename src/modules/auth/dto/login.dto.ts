@@ -6,7 +6,7 @@ export class LoginDto {
     type: String,
     default: null,
   })
-  email: string;
+  identifier: string;
 
   @IsNotEmpty()
   @ApiProperty({
