@@ -1,7 +1,10 @@
 import {
   Body,
   Controller,
+  Get,
+  Query,
   HttpCode,
+  Param,
   Post,
   Request,
   UseGuards,
@@ -37,10 +40,14 @@ export class AuthController {
       },
     },
   })
-  register(@Body() registerDto: RegisterDto) {
-    return this.authService.register(registerDto);
+  register(@Request() req, @Body() registerDto: RegisterDto) {
+    const proxyHost = `${req.protocol}://${req.get('host')}/${
+      routes.confirmVerify
+    }`;
+    return this.authService.register(registerDto, proxyHost);
   }
 
+  //! login
   @HttpCode(200)
   @UseGuards(LocalAuthGuard)
   @Post(`${routes.login}`)
@@ -64,6 +71,23 @@ export class AuthController {
     return this.authService.login(req.user);
   }
 
+  //! verify account
+  @HttpCode(200)
+  @Post(routes.verify)
+  @ApiBody({ schema: { properties: { email: { type: 'string' } } } })
+  async verify(@Request() req, @Body() verifyDto: { email: string }) {
+    const proxyHost = `${req.protocol}://${req.get('host')}/${
+      routes.confirmVerify
+    }`;
+    return this.authService.verifyAccount(verifyDto?.email, proxyHost);
+  }
+  //! confirm verify
+  @Get(`${routes.confirmVerify}`)
+  async confirmVerify(@Query('token') token: string) {
+    return this.authService.confirmVerify(token);
+  }
+
+  //! refreshToken
   @HttpCode(200)
   @Post(routes.refreshtoken)
   @ApiBody({ schema: { properties: { refreshToken: { type: 'string' } } } })

@@ -28,9 +28,9 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     if (checkAccount.isBlock) {
       throw new HttpException('Account was block', HttpStatus.OK);
     }
-    // if (!checkAccount.isVerify) {
-    //   throw new HttpException('Account unauthenticated', HttpStatus.OK);
-    // }
+    if (!checkAccount.isVerify) {
+      throw new HttpException('Account unauthenticated', HttpStatus.OK);
+    }
     const account = await this.authService.validateAccount(
       identifier,
       password,

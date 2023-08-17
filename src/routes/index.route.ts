@@ -7,6 +7,8 @@ const routes = {
   //! auth
   register: 'register',
   login: 'login',
+  verify: 'verify',
+  confirmVerify: 'confirmVerify',
   refreshtoken: 'refreshtoken',
   //! lesson
   lesson: 'lesson',
