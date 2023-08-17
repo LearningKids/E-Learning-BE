@@ -4,6 +4,7 @@ import {
   HttpStatus,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
@@ -27,7 +28,10 @@ export class AuthService {
     private mailService: EmailService,
   ) {}
   //! register
-  async register(registerDto: RegisterDto): Promise<Account> {
+  async register(
+    registerDto: RegisterDto,
+    proxyHost: string,
+  ): Promise<Account> {
     try {
       const roleStudent_Trial = baseRoles.find(
         (role) => role.roleName === roleNames.student_trial,
@@ -37,7 +41,14 @@ export class AuthService {
       registerDto.role = roleStudent_Trial.id;
       const createdAccount = new this.accountModel(registerDto);
       const accountSuccess = await createdAccount.save();
-      this.mailService.sendEmail(registerDto.email, this.subjectMail, '111');
+      const token = this.generateAccessToken({ email: registerDto.email });
+      const uri = `${proxyHost}?token=${token}`;
+
+      this.mailService.sendEmail(
+        registerDto.email,
+        this.subjectMail,
+        `You have to click link below to verify account: ${uri}`,
+      );
       return accountSuccess;
     } catch (error) {
       throw new InternalServerErrorException();
@@ -64,13 +75,39 @@ export class AuthService {
       refreshToken,
     };
   }
+  //! verify account
+  async verifyAccount(email: string, proxyHost: string) {
+    const account = await this.getAccountByEmail(email);
+    if (!account) {
+      throw new NotFoundException('Account not found !');
+    }
+    const token = this.generateAccessToken({ email });
+    const uri = `${proxyHost}?token=${token}`;
+    this.mailService.sendEmail(
+      email,
+      this.subjectMail,
+      `You have to click link below to verify account: ${uri}`,
+    );
+    return 'Email send to you';
+  }
+  //! confirm verify
+  async confirmVerify(email: string) {
+    const decoded = await this.jwtService.verify(email, {
+      secret: process.env.accessToken,
+    });
+    const account = await this.accountModel.findOneAndUpdate(
+      { email: decoded.email },
+      { isVerify: true },
+      { new: true },
+    );
+    return 'account verify success';
+  }
   //! getByEmail
   async getAccountByEmail(email: string): Promise<Account> {
-    return await this.accountModel.findOne({ email });
+    return await this.accountModel.findOne({ email }).exec();
   }
   //! get by email or phone
   async getAccountByEmailorPhone(identifier: string): Promise<Account> {
-    console.log(identifier);
     return await this.accountModel
       .findOne()
       .or([{ email: identifier }, { phonenumber: identifier }])
@@ -129,7 +166,7 @@ export class AuthService {
     return account;
   }
   //! accessToken
-  generateAccessToken(payload: IToken) {
+  generateAccessToken(payload: IToken | any) {
     return this.jwtService.sign(payload, {
       secret: `${process.env.accessToken}`,
       expiresIn: `${process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME}s`,
