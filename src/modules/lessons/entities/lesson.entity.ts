@@ -7,6 +7,7 @@ import {
   AutoIncrementID,
   AutoIncrementIDOptions,
 } from '@typegoose/auto-increment';
+import { BadRequestException } from '@nestjs/common';
 
 @Schema({ versionKey: false, timestamps: true })
 export class Lesson extends BaseEntity {
@@ -61,6 +62,15 @@ export class Lesson extends BaseEntity {
 export type LessonDocument = HydratedDocument<Lesson>;
 
 export const LessonSchema = SchemaFactory.createForClass(Lesson);
+
+LessonSchema.post('save', function (error, doc, next) {
+  if (error.code === 11000) {
+    const [fieldName, value] = Object.entries(error.keyValue)[0];
+    throw new BadRequestException(`Duplicate ${[fieldName]} : ${value}`);
+  } else {
+    next();
+  }
+});
 LessonSchema.plugin(AutoIncrementID, {
   field: 'id',
   startAt: 1,

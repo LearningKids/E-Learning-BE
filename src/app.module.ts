@@ -11,7 +11,8 @@ import { join } from 'path';
 import { ImagesupModule } from './modules/imagesup/imagesup.module';
 import { UploadModule } from './modules/upload/upload.module';
 import { QuestionsModule } from './modules/questions/questions.module';
-import { ExcercisesModule } from './modules/excercises/excercises.module';
+import { ExcercisesModule } from './modules/exercises/excercises.module';
+import { ClassModule } from './modules/class/class.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -38,6 +39,7 @@ import { ExcercisesModule } from './modules/excercises/excercises.module';
     UploadModule,
     QuestionsModule,
     ExcercisesModule,
+    ClassModule,
   ],
   controllers: [],
   providers: [],

@@ -7,13 +7,15 @@ import {
   AutoIncrementIDOptions,
 } from '@typegoose/auto-increment';
 import { EXCERCISE_TYPE } from 'src/core/constants';
+import { BadRequestException } from '@nestjs/common';
 
 @Schema({ versionKey: false, timestamps: true })
-export class Excercise extends BaseEntity {
+export class Exercise extends BaseEntity {
   @Prop({ type: Number, unique: true })
   id: number;
 
   @Prop({
+    unique: true,
     required: true,
     type: String,
   })
@@ -42,9 +44,17 @@ export class Excercise extends BaseEntity {
   })
   questions: Types.ObjectId[];
 }
-export type ExcerciseDocument = Excercise & Document;
-export const ExcerciseSchema = SchemaFactory.createForClass(Excercise);
+export type ExcerciseDocument = Exercise & Document;
+export const ExcerciseSchema = SchemaFactory.createForClass(Exercise);
 
+ExcerciseSchema.post('save', function (error, doc, next) {
+  if (error.code === 11000) {
+    const [fieldName, value] = Object.entries(error.keyValue)[0];
+    throw new BadRequestException(`Duplicate ${[fieldName]} : ${value}`);
+  } else {
+    next();
+  }
+});
 ExcerciseSchema.plugin(AutoIncrementID, {
   field: 'id',
   startAt: 1,

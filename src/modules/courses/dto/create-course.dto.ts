@@ -7,6 +7,7 @@ import {
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { COURSE_TYPE } from 'src/core/constants';
+import { Types } from 'mongoose';
 
 export class CreateCourseDto {
   @ApiProperty({ example: 'Tên khóa học', description: 'Tên khóa học' })
@@ -40,5 +41,5 @@ export class CreateCourseDto {
   })
   @IsNotEmpty()
   @ArrayNotEmpty()
-  content_lesson: any[];
+  content_lesson: Types.ObjectId[];
 }

@@ -7,6 +7,7 @@ import {
   AutoIncrementID,
   AutoIncrementIDOptions,
 } from '@typegoose/auto-increment';
+import { BadRequestException } from '@nestjs/common';
 export enum GENDER {
   Male = 'MALE',
   Female = 'FEMALE',
@@ -75,6 +76,16 @@ export class Account extends BaseEntity {
 export type AccountDocument = HydratedDocument<Account>;
 
 export const AccountSchema = SchemaFactory.createForClass(Account);
+
+AccountSchema.post('save', function (error, doc, next) {
+  if (error.code === 11000) {
+    const [fieldName, value] = Object.entries(error.keyValue)[0];
+    throw new BadRequestException(`Duplicate ${[fieldName]} : ${value}`);
+  } else {
+    next();
+  }
+});
+
 AccountSchema.plugin(AutoIncrementID, {
   field: 'id',
   startAt: 5,

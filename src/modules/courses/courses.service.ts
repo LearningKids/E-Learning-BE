@@ -34,6 +34,7 @@ export class CoursesService {
     const courses = await this.courseModel.paginate(filters, options);
     return courses;
   }
+
   //! detail
   async findOne(id: number) {
     try {
