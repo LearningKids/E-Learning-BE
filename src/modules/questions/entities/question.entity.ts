@@ -7,6 +7,7 @@ import {
 } from '@typegoose/auto-increment';
 import { QUESTION_TYPE } from 'src/core/constants';
 import { Types } from 'mongoose';
+import { BadRequestException } from '@nestjs/common';
 
 @Schema({ versionKey: false, timestamps: true })
 export class Question extends BaseEntity {
@@ -98,6 +99,15 @@ export class Question extends BaseEntity {
 
 export type QuestionDocument = Question & Document;
 export const QuestionSchema = SchemaFactory.createForClass(Question);
+
+QuestionSchema.post('save', function (error, doc, next) {
+  if (error.code === 11000) {
+    const [fieldName, value] = Object.entries(error.keyValue)[0];
+    throw new BadRequestException(`Duplicate ${[fieldName]} : ${value}`);
+  } else {
+    next();
+  }
+});
 QuestionSchema.plugin(AutoIncrementID, {
   field: 'id',
   startAt: 1,

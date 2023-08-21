@@ -32,3 +32,14 @@ export enum EXCERCISE_TYPE {
   homework = 'HOMEWORK',
   trial_learning = 'TRIAL_LEARNING',
 }
+
+export enum CLASS_STATUS {
+  prepare = 'PREPARE',
+  running = 'RUNNING',
+  finished = 'FINISHED',
+}
+
+export enum CLASS_TYPES {
+  online = 'ONLINE',
+  offline = 'OFFLINE',
+}

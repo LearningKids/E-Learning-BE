@@ -11,8 +11,6 @@ import {
   Query,
   HttpCode,
   Req,
-  UseInterceptors,
-  UploadedFile,
 } from '@nestjs/common';
 import { AccountsService } from './accounts.service';
 import { UpdateAccountDto } from './dto/update-account.dto';
@@ -27,8 +25,6 @@ import { Roles, accessRole } from 'src/decorators/roles.decorators';
 import { Public } from 'src/decorators/auth.decorators';
 import { FilterAccountDto } from './dto/filter-account.dto';
 import { ResponseMessage } from 'src/decorators/response.decorators';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { multerStorage } from '../../configs/multer.config';
 import { UploadAvatarDto } from './dto/upload-avatar.dto';
 
 @Controller(`${routes.account}`)

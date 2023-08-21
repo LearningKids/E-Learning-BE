@@ -6,6 +6,7 @@ const queryFilters = (dataFilter: any) => {
     if (dataFilter[key]) {
       const filter = {};
       filter[key] = { $regex: dataFilter[key], $options: 'i' };
+
       filters.push(filter);
     }
   });

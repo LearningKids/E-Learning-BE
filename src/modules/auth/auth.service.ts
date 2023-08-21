@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   HttpException,
   HttpStatus,
   Injectable,
@@ -92,15 +91,19 @@ export class AuthService {
   }
   //! confirm verify
   async confirmVerify(email: string) {
-    const decoded = await this.jwtService.verify(email, {
-      secret: process.env.accessToken,
-    });
-    const account = await this.accountModel.findOneAndUpdate(
-      { email: decoded.email },
-      { isVerify: true },
-      { new: true },
-    );
-    return 'account verify success';
+    try {
+      const decoded = await this.jwtService.verify(email, {
+        secret: process.env.accessToken,
+      });
+      const account = await this.accountModel.findOneAndUpdate(
+        { email: decoded.email },
+        { isVerify: true },
+        { new: true },
+      );
+      return 'account verify success';
+    } catch (error) {
+      throw new HttpException({ data: error }, HttpStatus.BAD_REQUEST);
+    }
   }
   //! getByEmail
   async getAccountByEmail(email: string): Promise<Account> {

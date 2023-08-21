@@ -8,7 +8,7 @@ import {
 import { CreateExcerciseDto } from './dto/create-excercise.dto';
 import { UpdateExcerciseDto } from './dto/update-excercise.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Excercise } from './entities/excercise.entity';
+import { Exercise } from './entities/excercise.entity';
 import { PaginateModel } from 'mongoose';
 import { FilterExerciseDto } from './dto/filter-exercise.dto';
 import paginationQuery from 'src/pagination';
@@ -17,11 +17,11 @@ import queryFilters from 'src/pagination/filters';
 @Injectable()
 export class ExcercisesService {
   constructor(
-    @InjectModel(Excercise.name)
-    private readonly exerciseModel: PaginateModel<Excercise>,
+    @InjectModel(Exercise.name)
+    private readonly exerciseModel: PaginateModel<Exercise>,
   ) {}
 
-  create(createExcerciseDto: CreateExcerciseDto): Promise<Excercise> {
+  create(createExcerciseDto: CreateExcerciseDto): Promise<Exercise> {
     const createExercise = new this.exerciseModel(createExcerciseDto);
     return createExercise.save();
   }

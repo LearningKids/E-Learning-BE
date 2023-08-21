@@ -20,6 +20,8 @@ const routes = {
   question: 'question',
   //! exercise
   exercise: 'exercise',
+  //! class
+  class: 'class',
 };
 
 export default routes;
