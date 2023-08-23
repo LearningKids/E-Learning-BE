@@ -9,7 +9,6 @@ import {
   Post,
   Put,
   Query,
-  HttpCode,
   Req,
 } from '@nestjs/common';
 import { AccountsService } from './accounts.service';
@@ -22,7 +21,6 @@ import { GENDER } from './entities/account.entity';
 import { BlockAccountDto } from './dto/block-account.dto';
 import { RolesGuard } from '../auth/guards/role.guard';
 import { Roles, accessRole } from 'src/decorators/roles.decorators';
-import { Public } from 'src/decorators/auth.decorators';
 import { FilterAccountDto } from './dto/filter-account.dto';
 import { ResponseMessage } from 'src/decorators/response.decorators';
 import { UploadAvatarDto } from './dto/upload-avatar.dto';
@@ -114,14 +112,7 @@ export class AccountsController {
   remove(@Param('id') id: string) {
     return this.accountsService.remove(id);
   }
-  //! forgot password
-  @HttpCode(200)
-  @Public()
-  @Post(routes.forgotPassword)
-  @ApiQuery({ name: 'email', required: true, type: String })
-  forgotPassword(@Query('email') email: string) {
-    return this.accountsService.forgotPassword(email);
-  }
+
   //! change password
   @Put(routes.changePassword)
   @ApiQuery({ name: 'password', required: true, type: String })

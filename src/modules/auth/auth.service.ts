@@ -16,10 +16,13 @@ import { JwtService } from '@nestjs/jwt';
 import { IToken } from 'src/interfaces/Token.interface';
 import { EmailService } from '../mail/mail.service';
 import { roleNames } from 'src/core/constants';
+import { v4 as uuidv4 } from 'uuid';
+
 @Injectable()
 export class AuthService {
   saltOrRounds = 10;
   subjectMail = 'Mail verify account from E-Learning-Kids';
+  subjectMailForgot = 'E-Learning-Kids send New Password to you';
   constructor(
     @InjectModel(Account.name) private readonly accountModel: Model<Account>,
     @InjectConnection() private connection: Connection,
@@ -105,6 +108,21 @@ export class AuthService {
       throw new HttpException({ data: error }, HttpStatus.BAD_REQUEST);
     }
   }
+
+  //! forgot password
+  async forgotPassword(email: string) {
+    const UUID: string = uuidv4();
+    const passwordUser = UUID.split('-')[0];
+    const newPassword = await this.hashFunc(passwordUser);
+    await this.getAccountByEmail(email);
+    await this.accountModel.findOneAndUpdate(
+      { email },
+      { password: newPassword, refreshToken: null },
+    );
+    this.mailService.sendEmail(email, this.subjectMailForgot, passwordUser);
+    throw new HttpException('Send mail forgot password success', HttpStatus.OK);
+  }
+
   //! getByEmail
   async getAccountByEmail(email: string): Promise<Account> {
     return await this.accountModel.findOne({ email }).exec();

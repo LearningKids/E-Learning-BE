@@ -11,10 +11,12 @@ import {
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guards/local.guard';
 import routes from 'src/routes/index.route';
-import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { LoginDto } from 'src/modules/auth/dto/login.dto';
 import { RegisterDto } from 'src/modules/auth/dto/register.dto';
 import { RefreshTokenDto } from './dto/refreshToken.dto';
+import { Public } from 'src/decorators/auth.decorators';
+
 @ApiTags(`Auth/Login/Register`)
 @Controller('')
 export class AuthController {
@@ -93,5 +95,13 @@ export class AuthController {
   async refreshAccessToken(@Body() refreshTokenDto: RefreshTokenDto) {
     const { refreshToken } = refreshTokenDto;
     return this.authService.getAccessToken(refreshToken);
+  }
+  //! forgot password
+  @HttpCode(200)
+  @Public()
+  @Post(routes.forgotPassword)
+  @ApiBody({ schema: { properties: { email: { type: 'string' } } } })
+  forgotPassword(@Body() body: { email: string }) {
+    return this.authService.forgotPassword(body.email.toLocaleLowerCase());
   }
 }
