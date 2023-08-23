@@ -6,7 +6,6 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { v4 as uuidv4 } from 'uuid';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
 import { Account } from './entities/account.entity';
@@ -21,7 +20,6 @@ import { EmailService } from '../mail/mail.service';
 
 @Injectable()
 export class AccountsService {
-  subjectMail = 'E-Learning-Kids send New Password to you';
   constructor(
     @InjectModel(Account.name)
     private readonly accountModel: PaginateModel<Account>,
@@ -102,19 +100,6 @@ export class AccountsService {
     throw new HttpException('Delete sucess', HttpStatus.OK);
   }
 
-  //! forgot password
-  async forgotPassword(email: string) {
-    const UUID: string = uuidv4();
-    const passwordUser = UUID.split('-')[0];
-    const newPassword = await this.authService.hashFunc(passwordUser);
-    await this.getAccountByEmail(email);
-    await this.accountModel.findOneAndUpdate(
-      { email },
-      { password: newPassword, refreshToken: null },
-    );
-    this.emailService.sendEmail(email, this.subjectMail, passwordUser);
-    throw new HttpException('Send mail forgot password success', HttpStatus.OK);
-  }
   //! change password
   async changePassword(password: string, newpassword: string, email: string) {
     const account = await this.accountModel
