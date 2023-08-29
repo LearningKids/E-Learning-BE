@@ -4,6 +4,7 @@ const routes = {
   forgotPassword: 'forgotpassword',
   changePassword: 'changepassword',
   block: 'block',
+  profile: 'profile/me',
   //! auth
   register: 'register',
   login: 'login',
