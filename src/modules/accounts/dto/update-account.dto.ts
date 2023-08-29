@@ -5,7 +5,7 @@ export class UpdateAccountDto extends PartialType(
   OmitType(CreateAccountDto, ['email'] as const),
 ) {
   password?: string;
-  gender?: string;
+  gender?: number;
   fullname?: string;
   phonenumber?: string;
   role?: number;

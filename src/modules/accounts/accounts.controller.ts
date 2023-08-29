@@ -42,7 +42,7 @@ export class AccountsController {
           fullname: 'Nguyen Cuong',
           phonenumber: '0962458201',
           password: 'Cuong1912!',
-          gender: `${GENDER.Male}`,
+          gender: GENDER.Male,
           date_of_birth: '1990-07-15',
           role: 1,
         } as CreateAccountDto,
@@ -67,6 +67,12 @@ export class AccountsController {
   findOne(@Param('id') id: number) {
     return this.accountsService.findOne(id);
   }
+  //! profile
+  @Get(`${routes.profile}`)
+  profile(@Req() request: any) {
+    const { id } = request.user?.account;
+    return this.accountsService.findOne(id);
+  }
   //! update
   @Patch(':id')
   @ApiBody({
@@ -77,7 +83,7 @@ export class AccountsController {
           fullname: 'Nguyen Cuong',
           phonenumber: '0962458201',
           password: 'Cuong1912!',
-          gender: `${GENDER.Male}`,
+          gender: GENDER.Male,
           date_of_birth: '1990-07-15',
           role: 1,
         } as UpdateAccountDto,

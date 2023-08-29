@@ -9,9 +9,9 @@ import {
 } from '@typegoose/auto-increment';
 import { BadRequestException } from '@nestjs/common';
 export enum GENDER {
-  Male = 'MALE',
-  Female = 'FEMALE',
-  Other = 'OTHER',
+  Male = 1,
+  Female = 2,
+  Other = 3,
 }
 @Schema({ versionKey: false, timestamps: true })
 export class Account extends BaseEntity {
@@ -56,7 +56,7 @@ export class Account extends BaseEntity {
     enum: GENDER,
     default: GENDER.Other,
   })
-  gender: string;
+  gender: number;
   @Prop({
     default: null,
     select: false,
