@@ -190,7 +190,7 @@ export class AuthService {
   generateAccessToken(payload: IToken | any) {
     return this.jwtService.sign(payload, {
       secret: `${process.env.accessToken}`,
-      expiresIn: `${process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME}s`,
+      // expiresIn: `${process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME}s`,
     });
   }
   //! refreshToken

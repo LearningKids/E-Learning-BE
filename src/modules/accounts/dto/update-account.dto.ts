@@ -4,6 +4,7 @@ import { CreateAccountDto } from './create-account.dto';
 export class UpdateAccountDto extends PartialType(
   OmitType(CreateAccountDto, ['email'] as const),
 ) {
+  email?: string;
   password?: string;
   gender?: number;
   fullname?: string;
