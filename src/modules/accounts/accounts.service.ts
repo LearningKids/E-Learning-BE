@@ -122,12 +122,12 @@ export class AccountsService {
   }
   //! upload avatar
   async uploadAvatar(email: string, avatar: string) {
-    await this.accountModel.findOneAndUpdate(
+    const account = await this.accountModel.findOneAndUpdate(
       { email },
       { avatar: avatar },
       { new: true },
     );
-    return 'Update avatar success';
+    return account;
   }
   //! Find Account by Email
   async getAccountByEmail(email: string): Promise<Account> {

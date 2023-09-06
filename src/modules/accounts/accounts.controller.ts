@@ -24,6 +24,7 @@ import { Roles, accessRole } from 'src/decorators/roles.decorators';
 import { FilterAccountDto } from './dto/filter-account.dto';
 import { ResponseMessage } from 'src/decorators/response.decorators';
 import { UploadAvatarDto } from './dto/upload-avatar.dto';
+import { ChangePasswordDto } from './dto/changepassword-account.dto';
 
 @Controller(`${routes.account}`)
 @ApiTags(`${routes.account}`)
@@ -121,16 +122,10 @@ export class AccountsController {
 
   //! change password
   @Put(routes.changePassword)
-  @ApiQuery({ name: 'password', required: true, type: String })
-  @ApiQuery({ name: 'newpassword', required: true, type: String })
-  changePassword(
-    @Query('password') password: string,
-    @Query('newpassword') newpassword: string,
-    @Req() request: any,
-  ) {
+  changePassword(@Req() request: any, @Body() body: ChangePasswordDto) {
     return this.accountsService.changePassword(
-      password,
-      newpassword,
+      body.password,
+      body.newpassword,
       request.user.account?.email,
     );
   }
