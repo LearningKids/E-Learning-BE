@@ -8,6 +8,7 @@ const routes = {
   //! auth
   register: 'register',
   login: 'login',
+  loginGoogle: 'loginGoogle',
   verify: 'verify',
   confirmVerify: 'confirmVerify',
   refreshtoken: 'refreshtoken',

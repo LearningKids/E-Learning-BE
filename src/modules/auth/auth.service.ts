@@ -77,6 +77,10 @@ export class AuthService {
       refreshToken,
     };
   }
+  //! login with email
+  async loginWithEmail() {
+    return 'login with email';
+  }
   //! verify account
   async verifyAccount(email: string, proxyHost: string) {
     const account = await this.getAccountByEmail(email);

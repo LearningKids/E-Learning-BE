@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common';
 import { AccountsService } from './accounts.service';
 import { UpdateAccountDto } from './dto/update-account.dto';
-import { ApiTags, ApiBearerAuth, ApiBody, ApiQuery } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth, ApiBody } from '@nestjs/swagger';
 import routes from 'src/routes/index.route';
 import { JwtAccessTokenGuard } from '../auth/guards/jwt.guard';
 import { CreateAccountDto } from './dto/create-account.dto';
@@ -82,8 +82,6 @@ export class AccountsController {
       account_1: {
         value: {
           fullname: 'Nguyen Cuong',
-          phonenumber: '0962458201',
-          password: 'Cuong1912!',
           gender: GENDER.Male,
           date_of_birth: '1990-07-15',
           role: 1,
