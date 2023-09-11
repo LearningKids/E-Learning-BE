@@ -20,16 +20,19 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
       identifier,
     );
     if (!checkAccount) {
-      throw new NotFoundException('Account not found');
+      throw new NotFoundException('Tài khoản không tồn tại');
     }
     if (checkAccount.deleted_at != null) {
-      throw new HttpException('Account is not active', HttpStatus.OK);
+      throw new HttpException(
+        'Tài khoản không hoạt động',
+        HttpStatus.FORBIDDEN,
+      );
     }
     if (checkAccount.isBlock) {
-      throw new HttpException('Account was block', HttpStatus.OK);
+      throw new HttpException('Tài khoản bị khoá', HttpStatus.FORBIDDEN);
     }
     if (!checkAccount.isVerify) {
-      throw new HttpException('Account unauthenticated', HttpStatus.OK);
+      throw new HttpException('Tài khoản chưa xác thực', HttpStatus.FORBIDDEN);
     }
     const account = await this.authService.validateAccount(
       identifier,

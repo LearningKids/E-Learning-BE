@@ -72,6 +72,13 @@ export class AuthController {
     return this.authService.login(req.user);
   }
 
+  //! login with email
+  @HttpCode(200)
+  @Post(`${routes.loginGoogle}`)
+  async loginWithEmail() {
+    return this.loginWithEmail();
+  }
+
   //! verify account
   @HttpCode(200)
   @Post(routes.verify)
