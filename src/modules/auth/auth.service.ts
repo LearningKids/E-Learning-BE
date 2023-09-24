@@ -201,7 +201,7 @@ export class AuthService {
   generateRefreshToken(payload: IToken) {
     return this.jwtService.sign(payload, {
       secret: `${process.env.refreshToken}`,
-      expiresIn: `${process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME}s`,
+      // expiresIn: `${process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME}s`,
     });
   }
   // //! hash data

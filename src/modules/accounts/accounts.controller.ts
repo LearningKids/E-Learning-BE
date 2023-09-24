@@ -18,7 +18,6 @@ import routes from 'src/routes/index.route';
 import { JwtAccessTokenGuard } from '../auth/guards/jwt.guard';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { GENDER } from './entities/account.entity';
-import { BlockAccountDto } from './dto/block-account.dto';
 import { RolesGuard } from '../auth/guards/role.guard';
 import { Roles, accessRole } from 'src/decorators/roles.decorators';
 import { FilterAccountDto } from './dto/filter-account.dto';
@@ -93,24 +92,10 @@ export class AccountsController {
     return this.accountsService.update(id, updateAccountDto);
   }
   //! block
-  @ApiBody({
-    type: BlockAccountDto,
-    examples: {
-      block: {
-        value: {
-          isBlock: true,
-        } as BlockAccountDto,
-      },
-      unBlock: {
-        value: {
-          isBlock: false,
-        } as BlockAccountDto,
-      },
-    },
-  })
+
   @Put(`:id/${routes.block}`)
-  blockAccount(@Param('id') id: number, @Body() isBlock: BlockAccountDto) {
-    return this.accountsService.blockAccount(id, isBlock);
+  blockAccount(@Param('id') id: number) {
+    return this.accountsService.blockAccount(id);
   }
   //! delete
   @Delete(':id')

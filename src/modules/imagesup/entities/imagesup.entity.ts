@@ -27,7 +27,7 @@ export class Imagesup extends BaseEntity {
     enum: IMAGESUP_TYPE,
     default: IMAGESUP_TYPE.other,
   })
-  imagesup_type: string;
+  imagesup_type: number;
 
   @Prop({
     required: true,

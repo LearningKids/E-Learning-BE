@@ -12,8 +12,9 @@ export enum LESSON_TYPE {
   created_lesson = 'CREATE_LESSON', //! lesson created by admin or teacher
 }
 export enum IMAGESUP_TYPE {
-  other = 'other',
-  fruit = 'fruit',
+  other = 1,
+  fruit = 2,
+  animal = 3,
 }
 export enum COURSE_TYPE {
   trial = 'TRIAL',

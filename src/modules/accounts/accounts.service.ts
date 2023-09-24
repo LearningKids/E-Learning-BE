@@ -70,7 +70,7 @@ export class AccountsService {
     }
   }
   //! block
-  async blockAccount(id: number, dataBlock: BlockAccountDto) {
+  async blockAccount(id: number) {
     try {
       const account = await this.accountModel.findOne({ id }).exec();
       if (!account) {
@@ -79,7 +79,7 @@ export class AccountsService {
       const accountBlock = await this.accountModel
         .findOneAndUpdate(
           { id: id },
-          { isBlock: dataBlock.isBlock },
+          { isBlock: !account.isBlock },
           { new: true },
         )
         .exec();

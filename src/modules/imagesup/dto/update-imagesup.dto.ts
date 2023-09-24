@@ -23,7 +23,7 @@ export class UpdateImagesupDto extends PartialType(
     example: IMAGESUP_TYPE.fruit,
   })
   @IsOptional()
-  imagesup_type: string;
+  imagesup_type: number;
 
   @ApiPropertyOptional({
     description: 'image',
