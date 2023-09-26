@@ -79,7 +79,8 @@ export const AccountSchema = SchemaFactory.createForClass(Account);
 AccountSchema.post('save', function (error, doc, next) {
   if (error.code === 11000) {
     const [fieldName, value] = Object.entries(error.keyValue)[0];
-    throw new BadRequestException(`Duplicate ${[fieldName]} : ${value}`);
+    const errorMessage = `Duplicate ${[fieldName]}`;
+    next(new BadRequestException(errorMessage));
   } else {
     next();
   }

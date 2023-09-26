@@ -45,7 +45,6 @@ export class AuthService {
       const accountSuccess = await createdAccount.save();
       const token = this.generateAccessToken({ email: registerDto.email });
       const uri = `${proxyHost}?token=${token}`;
-
       this.mailService.sendEmail(
         registerDto.email,
         this.subjectMail,
@@ -53,7 +52,7 @@ export class AuthService {
       );
       return accountSuccess;
     } catch (error) {
-      throw new InternalServerErrorException();
+      throw error;
     }
   }
   //! login
