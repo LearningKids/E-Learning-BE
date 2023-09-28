@@ -121,7 +121,7 @@ export class AuthService {
       await this.getAccountByEmail(email);
       const accountDetail = await this.accountModel.findOne({ email });
       if (!accountDetail) {
-        throw new HttpException('Email not found', HttpStatus.NOT_FOUND);
+        throw new NotFoundException('Account not found !');
       }
       await this.accountModel.findOneAndUpdate(
         { email },
