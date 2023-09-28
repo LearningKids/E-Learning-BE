@@ -114,16 +114,27 @@ export class AuthService {
 
   //! forgot password
   async forgotPassword(email: string) {
-    const UUID: string = uuidv4();
-    const passwordUser = UUID.split('-')[0];
-    const newPassword = await this.hashFunc(passwordUser);
-    await this.getAccountByEmail(email);
-    await this.accountModel.findOneAndUpdate(
-      { email },
-      { password: newPassword, refreshToken: null },
-    );
-    this.mailService.sendEmail(email, this.subjectMailForgot, passwordUser);
-    throw new HttpException('Send mail forgot password success', HttpStatus.OK);
+    try {
+      const UUID: string = uuidv4();
+      const passwordUser = UUID.split('-')[0];
+      const newPassword = await this.hashFunc(passwordUser);
+      await this.getAccountByEmail(email);
+      const accountDetail = await this.accountModel.findOne({ email });
+      if (!accountDetail) {
+        throw new HttpException('Email not found', HttpStatus.NOT_FOUND);
+      }
+      await this.accountModel.findOneAndUpdate(
+        { email },
+        { password: newPassword, refreshToken: null },
+      );
+      this.mailService.sendEmail(email, this.subjectMailForgot, passwordUser);
+      throw new HttpException(
+        'Send mail forgot password success',
+        HttpStatus.OK,
+      );
+    } catch (error) {
+      throw error;
+    }
   }
 
   //! getByEmail
