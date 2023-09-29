@@ -7,7 +7,7 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 const getDynamicFolder = (subfolder: string) => `./public/${subfolder}`;
 export const multerStorage = {
   fileFilter: (req: any, file: any, cb: any) => {
-    if (file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
+    if (file.mimetype.match(/\/(jpg|jpeg|png|gif|pdf|)$/i)) {
       // Allow storage of file
       cb(null, true);
     } else {
