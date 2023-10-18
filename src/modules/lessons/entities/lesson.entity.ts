@@ -12,7 +12,7 @@ import { BadRequestException } from '@nestjs/common';
 @Schema({ versionKey: false, timestamps: true })
 export class Lesson extends BaseEntity {
   @Prop({ type: Number, unique: true })
-  id: number;
+  _id: number;
 
   @Prop({
     required: true,
@@ -72,7 +72,7 @@ LessonSchema.post('save', function (error, doc, next) {
   }
 });
 LessonSchema.plugin(AutoIncrementID, {
-  field: 'id',
+  field: '_id',
   startAt: 1,
 } as AutoIncrementIDOptions);
 LessonSchema.plugin(panigate);

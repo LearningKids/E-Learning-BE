@@ -33,9 +33,9 @@ export class ImagesupService {
     return imagesup;
   }
 
-  async findOne(id: number) {
+  async findOne(_id: number) {
     try {
-      const imagesup = await this.imagesupModel.findOne({ id }).exec();
+      const imagesup = await this.imagesupModel.findById({ _id }).exec();
       return {
         data: imagesup,
         status: 200,
@@ -45,14 +45,14 @@ export class ImagesupService {
     }
   }
 
-  async update(id: number, updateImagesupDto: UpdateImagesupDto) {
+  async update(_id: number, updateImagesupDto: UpdateImagesupDto) {
     try {
-      const imagesup = await this.imagesupModel.findOne({ id }).exec();
+      const imagesup = await this.imagesupModel.findById({ _id }).exec();
       if (!imagesup) {
-        throw new NotFoundException(`${id} not Found`);
+        throw new NotFoundException(`${_id} not Found`);
       }
       const imagesupUpdate = await this.imagesupModel
-        .findOneAndUpdate({ id: id }, updateImagesupDto, { new: true })
+        .findOneAndUpdate({ _id: _id }, updateImagesupDto, { new: true })
         .exec();
       return imagesupUpdate;
     } catch (error) {
@@ -60,13 +60,13 @@ export class ImagesupService {
     }
   }
 
-  async remove(id: number) {
-    const imagesup = await this.imagesupModel.findOne({ id }).exec();
+  async remove(_id: number) {
+    const imagesup = await this.imagesupModel.findById({ _id }).exec();
     if (!imagesup) {
-      throw new NotFoundException(`${id} not Found`);
+      throw new NotFoundException(`${_id} not Found`);
     }
     await this.imagesupModel
-      .findOneAndUpdate({ id: id }, { deleted_at: Date.now() })
+      .findOneAndUpdate({ _id: _id }, { deleted_at: Date.now() })
       .exec();
     throw new HttpException('Delete sucess', HttpStatus.OK);
   }

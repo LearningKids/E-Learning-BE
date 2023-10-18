@@ -26,33 +26,16 @@ export class QuestionsService {
   }
 
   async findAll(pagination: FilterQuestiontDto) {
-    const options = paginationQuery(pagination.page, pagination.page_size, [
-      {
-        path: 'question_sup.question_meta.image_sup',
-        select: '-deleted_at -createdAt -updatedAt',
-      },
-      {
-        path: 'question_sup.answer_correct.image_sup',
-        select: '-deleted_at -createdAt -updatedAt',
-      },
-      {
-        path: 'question_sup.answer_system.image_sup',
-        select: '-deleted_at -createdAt -updatedAt',
-      },
-      {
-        path: 'question_sup.answer_check.image_sup',
-        select: '-deleted_at -createdAt -updatedAt',
-      },
-    ]);
+    const options = paginationQuery(pagination.page, pagination.page_size);
     const filters = queryFilters(pagination);
     const questions = await this.questionModel.paginate(filters, options);
     return questions;
   }
 
-  async findOne(id: number) {
+  async findOne(_id: number) {
     try {
       const question = await this.questionModel
-        .findOne({ id })
+        .findById({ _id })
         .populate({
           path: 'question_sup.question_meta.image_sup',
           select: '-deleted_at -createdAt -updatedAt',
@@ -79,17 +62,17 @@ export class QuestionsService {
     }
   }
 
-  update(id: number, updateQuestionDto: UpdateQuestionDto) {
-    return `This action updates a #${id} question`;
+  update(_id: number, updateQuestionDto: UpdateQuestionDto) {
+    return `This action updates a #${_id} question`;
   }
 
-  async remove(id: number) {
-    const account = await this.questionModel.findOne({ id }).exec();
+  async remove(_id: number) {
+    const account = await this.questionModel.findById({ _id }).exec();
     if (!account) {
-      throw new NotFoundException(`${id} not Found`);
+      throw new NotFoundException(`${_id} not Found`);
     }
     await this.questionModel
-      .findOneAndUpdate({ id: id }, { deleted_at: Date.now() })
+      .findOneAndUpdate({ _id: _id }, { deleted_at: Date.now() })
       .exec();
     throw new HttpException('Delete sucess', HttpStatus.OK);
   }

@@ -13,18 +13,18 @@ export class AccountsSeed implements Seeder {
   async seed(): Promise<any> {
     const accountsData = [
       {
-        id: 1,
+        _id: 1,
         email: 'admin@gmail.com',
         fullname: 'Admin',
         password:
-          '$2b$10$aXc/rlJnE.Xc.I2S/5jPmuJtxsFpqJTbAOfj16Zjl8bh94VAlfEd.',
+          '$2b$10$aXc/rlJnE.Xc.I2S/5jPmuJtxsFpqJTbAOfj16Zjl8bh94VAlfEd.', // Cuong2001
         phonenumber: '0962458202',
         date_of_birth: '2001-01-01T00:00:00.000+00:00',
         role: 1,
         isVerify: true,
       },
       {
-        id: 2,
+        _id: 2,
         email: 'teacher@gmail.com',
         fullname: 'Teacher',
         password:
@@ -35,7 +35,7 @@ export class AccountsSeed implements Seeder {
         isVerify: true,
       },
       {
-        id: 3,
+        _id: 3,
         email: 'student@gmail.com',
         fullname: 'Student',
         password:
@@ -46,7 +46,7 @@ export class AccountsSeed implements Seeder {
         isVerify: true,
       },
       {
-        id: 4,
+        _id: 4,
         email: 'trial@gmail.com',
         fullname: 'Student_Trial',
         password:

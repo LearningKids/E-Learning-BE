@@ -7,17 +7,25 @@ import {
   Param,
   Delete,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { CoursesService } from './courses.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import routes from 'src/routes/index.route';
 import { FilterCourseDto } from './dto/filter-course.dto';
 import { ResponseMessage } from 'src/decorators/response.decorators';
+import { Roles, accessRole } from 'src/decorators/roles.decorators';
+import { RolesGuard } from '../auth/guards/role.guard';
+import { JwtAccessTokenGuard } from '../auth/guards/jwt.guard';
 
 @ApiTags(`${routes.course}`)
 @Controller(`${routes.course}`)
+@ApiBearerAuth()
+@Roles(accessRole.accessAdmin)
+@UseGuards(RolesGuard)
+@UseGuards(JwtAccessTokenGuard)
 export class CoursesController {
   constructor(private readonly coursesService: CoursesService) {}
   //! post

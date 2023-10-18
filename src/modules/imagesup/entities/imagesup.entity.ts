@@ -12,7 +12,7 @@ import { BadRequestException } from '@nestjs/common';
 @Schema({ versionKey: false, timestamps: true })
 export class Imagesup extends BaseEntity {
   @Prop({ type: Number, unique: true })
-  id: number;
+  _id: number;
 
   @Prop({
     required: true,
@@ -48,7 +48,7 @@ ImagesupSchema.post('save', function (error, doc, next) {
   }
 });
 ImagesupSchema.plugin(AutoIncrementID, {
-  field: 'id',
+  field: '_id',
   startAt: 1,
 } as AutoIncrementIDOptions);
 ImagesupSchema.plugin(panigate);

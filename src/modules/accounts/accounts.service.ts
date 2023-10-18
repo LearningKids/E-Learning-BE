@@ -43,9 +43,9 @@ export class AccountsService {
     return accounts;
   }
   //! detail
-  async findOne(id: number): Promise<Account> {
+  async findOne(_id: number): Promise<Account> {
     try {
-      const account = await this.accountModel.findOne({ id }).exec();
+      const account = await this.accountModel.findById(_id);
       return account;
     } catch (error) {
       throw new InternalServerErrorException('Server Error');
@@ -53,16 +53,16 @@ export class AccountsService {
   }
   //! update
   async update(
-    id: number,
+    _id: number,
     updateAccountDto: UpdateAccountDto,
   ): Promise<Account> {
     try {
-      const account = await this.accountModel.findOne({ id }).exec();
+      const account = await this.accountModel.findById({ _id }).exec();
       if (!account) {
-        throw new NotFoundException(`${id} not Found`);
+        throw new NotFoundException(`${_id} not Found`);
       }
       const accountUpdate = await this.accountModel
-        .findOneAndUpdate({ id: id }, updateAccountDto, { new: true })
+        .findOneAndUpdate({ _id }, updateAccountDto, { new: true })
         .exec();
       return accountUpdate;
     } catch (error) {
@@ -70,15 +70,15 @@ export class AccountsService {
     }
   }
   //! block
-  async blockAccount(id: number) {
+  async blockAccount(_id: number) {
     try {
-      const account = await this.accountModel.findOne({ id }).exec();
+      const account = await this.accountModel.findById({ _id }).exec();
       if (!account) {
-        throw new NotFoundException(`${id} not Found`);
+        throw new NotFoundException(`${_id} not Found`);
       }
       const accountBlock = await this.accountModel
         .findOneAndUpdate(
-          { id: id },
+          { _id: _id },
           { isBlock: !account.isBlock },
           { new: true },
         )
@@ -89,13 +89,13 @@ export class AccountsService {
     }
   }
   //! remove
-  async remove(id: string) {
-    const account = await this.accountModel.findOne({ id }).exec();
+  async remove(_id: string) {
+    const account = await this.accountModel.findById({ _id }).exec();
     if (!account) {
-      throw new NotFoundException(`${id} not Found`);
+      throw new NotFoundException(`${_id} not Found`);
     }
     await this.accountModel
-      .findOneAndUpdate({ id: id }, { deleted_at: Date.now() })
+      .findOneAndUpdate({ _id: _id }, { deleted_at: Date.now() })
       .exec();
     throw new HttpException('Delete sucess', HttpStatus.OK);
   }

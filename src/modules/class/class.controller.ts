@@ -6,19 +6,26 @@ import {
   Patch,
   Param,
   Delete,
-  InternalServerErrorException,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ClassService } from './class.service';
 import { CreateClassDto } from './dto/create-class.dto';
 import { UpdateClassDto } from './dto/update-class.dto';
 import routes from 'src/routes/index.route';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { FilterClassDto } from './dto/filter-class.dto';
 import { ResponseMessage } from 'src/decorators/response.decorators';
+import { Roles, accessRole } from 'src/decorators/roles.decorators';
+import { RolesGuard } from '../auth/guards/role.guard';
+import { JwtAccessTokenGuard } from '../auth/guards/jwt.guard';
 
 @Controller(routes.class)
 @ApiTags(routes.class)
+@ApiBearerAuth()
+@Roles(accessRole.accessAdmin)
+@UseGuards(RolesGuard)
+@UseGuards(JwtAccessTokenGuard)
 export class ClassController {
   constructor(private readonly classService: ClassService) {}
 

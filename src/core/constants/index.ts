@@ -25,8 +25,9 @@ export enum SUBJECT {
   English = 'ENGLISH',
 }
 
-export enum QUESTION_TYPE {
-  compare = 'COMPARE',
+export enum QUESTION_TYPE_ENTITY {
+  compare = 'compare',
+  completion = 'completion',
 }
 export enum EXCERCISE_TYPE {
   test = 'TEST',

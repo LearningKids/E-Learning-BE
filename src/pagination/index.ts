@@ -6,10 +6,8 @@ const myCustomLabels = {
   totalPages: 'pageCount',
   pagingCounter: 'slNo',
   meta: 'pagination',
-  nextPage: false,
-  prevPage: false,
-  hasPrevPage: false,
-  hasNextPage: false,
+  hasPrevPage: true,
+  hasNextPage: true,
 };
 
 const paginationQuery = (
@@ -22,6 +20,7 @@ const paginationQuery = (
     limit: page_size,
     customLabels: myCustomLabels,
     populate,
+    hasPrevPage: true,
   };
 };
 

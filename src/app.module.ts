@@ -13,6 +13,7 @@ import { UploadModule } from './modules/upload/upload.module';
 import { QuestionsModule } from './modules/questions/questions.module';
 import { ExcercisesModule } from './modules/exercises/excercises.module';
 import { ClassModule } from './modules/class/class.module';
+import { TypeModule } from './modules/type/type.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -40,6 +41,7 @@ import { ClassModule } from './modules/class/class.module';
     QuestionsModule,
     ExcercisesModule,
     ClassModule,
+    TypeModule,
   ],
   controllers: [],
   providers: [],

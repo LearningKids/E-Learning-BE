@@ -33,9 +33,9 @@ export class LessonsService {
     return lessons;
   }
   //! detail
-  async findOne(id: number) {
+  async findOne(_id: number) {
     try {
-      const lesson = await this.lessonModel.findOne({ id }).exec();
+      const lesson = await this.lessonModel.findById({ _id }).exec();
       return {
         data: lesson,
         status: 200,
@@ -45,14 +45,14 @@ export class LessonsService {
     }
   }
   //! update
-  async update(id: number, updateLessonDto: UpdateLessonDto): Promise<Lesson> {
+  async update(_id: number, updateLessonDto: UpdateLessonDto): Promise<Lesson> {
     try {
-      const account = await this.lessonModel.findOne({ id }).exec();
+      const account = await this.lessonModel.findById({ _id }).exec();
       if (!account) {
-        throw new NotFoundException(`${id} not Found`);
+        throw new NotFoundException(`${_id} not Found`);
       }
       const accountUpdate = await this.lessonModel
-        .findOneAndUpdate({ id: id }, updateLessonDto, { new: true })
+        .findOneAndUpdate({ _id: _id }, updateLessonDto, { new: true })
         .exec();
       return accountUpdate;
     } catch (error) {
@@ -60,13 +60,13 @@ export class LessonsService {
     }
   }
   //!remove
-  async remove(id: number) {
-    const account = await this.lessonModel.findOne({ id }).exec();
+  async remove(_id: number) {
+    const account = await this.lessonModel.findById({ _id }).exec();
     if (!account) {
-      throw new NotFoundException(`${id} not Found`);
+      throw new NotFoundException(`${_id} not Found`);
     }
     await this.lessonModel
-      .findOneAndUpdate({ id: id }, { deleted_at: Date.now() })
+      .findOneAndUpdate({ _id: _id }, { deleted_at: Date.now() })
       .exec();
     throw new HttpException('Delete sucess', HttpStatus.OK);
   }

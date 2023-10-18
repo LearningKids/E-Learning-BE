@@ -22,10 +22,10 @@ import { ResponseMessage } from 'src/decorators/response.decorators';
 
 @Controller(`${routes.question}`)
 @ApiTags(`${routes.question}`)
-// @ApiBearerAuth()
-// @Roles(accessRole.accessTeacher)
-// @UseGuards(RolesGuard)
-// @UseGuards(JwtAccessTokenGuard)
+@ApiBearerAuth()
+@Roles(accessRole.accessTeacher)
+@UseGuards(RolesGuard)
+@UseGuards(JwtAccessTokenGuard)
 export class QuestionsController {
   constructor(private readonly questionsService: QuestionsService) {}
 

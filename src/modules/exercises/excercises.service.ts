@@ -63,10 +63,10 @@ export class ExcercisesService {
     return exercises;
   }
 
-  async findOne(id: number) {
+  async findOne(_id: number) {
     try {
       const course = await this.exerciseModel
-        .findOne({ id })
+        .findById({ _id })
         .populate([
           { path: 'author', select: '-deleted_at -createdAt -updatedAt' },
           {
@@ -108,14 +108,14 @@ export class ExcercisesService {
     }
   }
   //! update
-  async update(id: number, updateExcerciseDto: UpdateExcerciseDto) {
+  async update(_id: number, updateExcerciseDto: UpdateExcerciseDto) {
     try {
-      const exercise = await this.exerciseModel.findOne({ id }).exec();
+      const exercise = await this.exerciseModel.findById({ _id }).exec();
       if (!exercise) {
-        throw new NotFoundException(`${id} not Found`);
+        throw new NotFoundException(`${_id} not Found`);
       }
       const exerciseUpdate = await this.exerciseModel
-        .findOneAndUpdate({ id: id }, updateExcerciseDto, { new: true })
+        .findOneAndUpdate({ _id }, updateExcerciseDto, { new: true })
         .exec();
       return exerciseUpdate;
     } catch (error) {
@@ -123,13 +123,13 @@ export class ExcercisesService {
     }
   }
   //! remove
-  async remove(id: number) {
-    const exercise = await this.exerciseModel.findOne({ id }).exec();
+  async remove(_id: number) {
+    const exercise = await this.exerciseModel.findById({ _id }).exec();
     if (!exercise) {
-      throw new NotFoundException(`${id} not Found`);
+      throw new NotFoundException(`${_id} not Found`);
     }
     await this.exerciseModel
-      .findOneAndUpdate({ id: id }, { deleted_at: Date.now() })
+      .findOneAndUpdate({ _id }, { deleted_at: Date.now() })
       .exec();
     throw new HttpException('Delete sucess', HttpStatus.OK);
   }

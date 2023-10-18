@@ -5,18 +5,17 @@ import {
   AutoIncrementID,
   AutoIncrementIDOptions,
 } from '@typegoose/auto-increment';
-import { QUESTION_TYPE } from 'src/core/constants';
-import { Types } from 'mongoose';
+import { QUESTION_TYPE_ENTITY } from 'src/core/constants';
 import { BadRequestException } from '@nestjs/common';
 
 @Schema({ versionKey: false, timestamps: true })
 export class Question extends BaseEntity {
   @Prop({ type: Number, unique: true })
-  id: number;
+  _id: number;
 
   @Prop({
     required: true,
-    enum: QUESTION_TYPE,
+    enum: QUESTION_TYPE_ENTITY,
   })
   question_type: string;
 
@@ -29,72 +28,51 @@ export class Question extends BaseEntity {
   @Prop({
     type: [
       {
-        question_meta: [
-          {
-            value: String,
-            image_sup: {
-              type: Types.ObjectId,
-              ref: 'Imagesup',
-            },
+        id_meta: {
+          type: Number,
+          unique: true,
+        },
+        question: [String],
+        image_sup: {
+          type: String,
+          required: false,
+          default: null,
+        },
+        answer_correct: {
+          answer: [String],
+          image_sup: {
+            type: String,
+            required: false,
+            default: null,
           },
-        ],
-        answer_correct: [
-          {
-            value: String,
-            image_sup: {
-              type: Types.ObjectId,
-              ref: 'Imagesup',
-            },
+        },
+        answer_system: {
+          answer: [String],
+          image_sup: {
+            type: String,
+            required: false,
+            default: null,
           },
-        ],
-        answer_system: [
-          {
-            value: String,
-            image_sup: {
-              type: Types.ObjectId,
-              ref: 'Imagesup',
-            },
-          },
-        ],
-        answer_check: [
-          {
-            value: String,
-            image_sup: {
-              type: Types.ObjectId,
-              ref: 'Imagesup',
-            },
-          },
-        ],
+        },
       },
     ],
     default: [],
   })
-  question_sup: {
-    question_meta: [
-      {
-        value: string;
-        image_sup: Types.ObjectId;
-      },
-    ];
-    answer_correct: [
-      {
-        value: string;
-        image_sup: Types.ObjectId;
-      },
-    ];
-    answer_system: [
-      {
-        value: string;
-        image_sup: Types.ObjectId;
-      },
-    ];
-    answer_check: [
-      {
-        value: string;
-        image_sup: Types.ObjectId;
-      },
-    ];
-  }[];
+  question_meta: [
+    {
+      id_meta: number;
+      question: [string];
+      image_sup?: string;
+      answer_correct: {
+        answer: string[];
+        image_sup: string;
+      };
+      answer_system: {
+        answer: string[];
+        image_sup: string;
+      };
+    },
+  ];
 }
 
 export type QuestionDocument = Question & Document;
@@ -109,7 +87,7 @@ QuestionSchema.post('save', function (error, doc, next) {
   }
 });
 QuestionSchema.plugin(AutoIncrementID, {
-  field: 'id',
+  field: '_id',
   startAt: 1,
 } as AutoIncrementIDOptions);
 

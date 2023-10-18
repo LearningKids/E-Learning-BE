@@ -36,10 +36,10 @@ export class CoursesService {
   }
 
   //! detail
-  async findOne(id: number) {
+  async findOne(_id: number) {
     try {
       const course = await this.courseModel
-        .findOne({ id })
+        .findById({ _id })
         .populate('content_lesson')
         .exec();
       return {
@@ -51,17 +51,17 @@ export class CoursesService {
     }
   }
 
-  update(id: number, updateCourseDto: UpdateCourseDto) {
-    return `This action updates a #${id} course`;
+  update(_id: number, updateCourseDto: UpdateCourseDto) {
+    return `This action updates a #${_id} course`;
   }
 
-  async remove(id: number) {
-    const course = await this.courseModel.findOne({ id }).exec();
+  async remove(_id: number) {
+    const course = await this.courseModel.findById({ _id }).exec();
     if (!course) {
-      throw new NotFoundException(`${id} not Found`);
+      throw new NotFoundException(`${_id} not Found`);
     }
     await this.courseModel
-      .findOneAndUpdate({ id: id }, { deleted_at: Date.now() })
+      .findOneAndUpdate({ _id }, { deleted_at: Date.now() })
       .exec();
     throw new HttpException('Delete sucess', HttpStatus.OK);
   }

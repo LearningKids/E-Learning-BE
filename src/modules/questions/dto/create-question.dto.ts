@@ -1,61 +1,53 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
+import {
+  IsArray,
+  IsEmpty,
+  IsEnum,
+  IsNotEmpty,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
 import { Type } from 'class-transformer';
-import { QUESTION_TYPE } from 'src/core/constants';
+import { QUESTION_TYPE_ENTITY } from 'src/core/constants';
 import { Types } from 'mongoose';
 
-class QuestionMetaDto {
+class AnswerDTO {
+  @IsArray()
+  @IsString({ each: true })
+  answer: string[];
+
+  image_sup: string;
+}
+class QuestionMetaDTO {
   @ApiProperty({
-    example: 'Meta value',
-    description: 'The value of the question meta.',
+    example: [],
+    description: 'The question.',
   })
-  @IsString()
-  value: string;
+  @IsArray()
+  @IsString({ each: true })
+  question: [];
 
   @ApiProperty({
     example: 'Meta image',
-    description: 'The image of the question meta.',
+    description: 'The image of the question if have.',
   })
-  @IsString()
-  image_sup: Types.ObjectId;
-}
-
-class AnswerDto {
-  @ApiProperty({
-    example: 'Answer value',
-    description: 'The value of the answer.',
-  })
-  @IsString()
-  value: string;
+  image_sup?: string;
 
   @ApiProperty({
-    example: 'Answer image',
-    description: 'The image of the answer.',
+    example: {},
+    description: 'The answer correct of the question meta.',
   })
-  @IsString()
-  image_sup: Types.ObjectId;
-}
+  @ValidateNested()
+  @Type(() => AnswerDTO)
+  answer_correct: AnswerDTO;
 
-class QuestionSupDto {
-  @ApiProperty({ type: () => [QuestionMetaDto] })
-  @ValidateNested({ each: true })
-  @Type(() => QuestionMetaDto)
-  question_meta: QuestionMetaDto[];
-
-  @ApiProperty({ type: () => [AnswerDto] })
-  @ValidateNested({ each: true })
-  @Type(() => AnswerDto)
-  answer_correct: AnswerDto[];
-
-  @ApiProperty({ type: () => [AnswerDto] })
-  @ValidateNested({ each: true })
-  @Type(() => AnswerDto)
-  answer_system: AnswerDto[];
-
-  @ApiProperty({ type: () => [AnswerDto] })
-  @ValidateNested({ each: true })
-  @Type(() => AnswerDto)
-  answer_check: AnswerDto[];
+  @ApiProperty({
+    example: [],
+    description: 'The answer system of the question meta.',
+  })
+  @ValidateNested()
+  @Type(() => AnswerDTO)
+  answer_system: AnswerDTO;
 }
 
 export class CreateQuestionDto {
@@ -65,47 +57,33 @@ export class CreateQuestionDto {
   question_name: string;
 
   @ApiProperty({
-    enum: QUESTION_TYPE,
-    default: QUESTION_TYPE.compare,
+    enum: QUESTION_TYPE_ENTITY,
+    default: QUESTION_TYPE_ENTITY.compare,
     description: 'The type of the question.',
   })
-  @IsEnum(QUESTION_TYPE)
+  @IsEnum(QUESTION_TYPE_ENTITY)
   question_type: string;
 
   @ApiProperty({
-    type: () => [QuestionSupDto],
+    type: () => [QuestionMetaDTO],
     default: [],
     example: [
       {
-        question_meta: [
-          {
-            value: 'Meta value',
-            image_sup: 'Meta image',
-          },
-        ],
-        answer_correct: [
-          {
-            value: 'Correct answer',
-            image_sup: 'Correct image',
-          },
-        ],
-        answer_system: [
-          {
-            value: 'System answer',
-            image_sup: 'System image',
-          },
-        ],
-        answer_check: [
-          {
-            value: 'Check answer',
-            image_sup: 'Check image',
-          },
-        ],
+        question: ['1', '2', '3', '[]', '5', '[]'],
+        image_sup: 'Meta image',
+        answer_correct: {
+          answer: ['4', '6'],
+          image_sup: 'Correct image',
+        },
+        answer_system: {
+          answer: ['6', '7', '4', '5'],
+          image_sup: 'System image',
+        },
       },
     ],
     description: 'The supplementary information for the question.',
   })
   @ValidateNested({ each: true })
-  @Type(() => QuestionSupDto)
-  question_sup: QuestionSupDto[];
+  @Type(() => QuestionMetaDTO)
+  question_meta: QuestionMetaDTO[];
 }

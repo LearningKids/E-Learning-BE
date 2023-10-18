@@ -32,7 +32,6 @@ export class ClassService {
 
   //! all
   async findAll(pagination: FilterClassDto) {
-    console.log(pagination);
     const options = paginationQuery(pagination.page, pagination.page_size, [
       {
         path: 'teacher',
@@ -57,10 +56,10 @@ export class ClassService {
   }
 
   //! detail
-  async findOne(id: number) {
+  async findOne(_id: number) {
     try {
       const course = await this.classModel
-        .findOne({ id })
+        .findById({ _id })
         .populate([
           {
             path: 'teacher',
@@ -89,14 +88,14 @@ export class ClassService {
     }
   }
 
-  async update(id: number, updateClassDto: UpdateClassDto) {
+  async update(_id: number, updateClassDto: UpdateClassDto) {
     try {
-      const clas = await this.classModel.findOne({ id }).exec();
+      const clas = await this.classModel.findById({ _id }).exec();
       if (!clas) {
-        throw new NotFoundException(`${id} not Found`);
+        throw new NotFoundException(`${_id} not Found`);
       }
       const classUpdate = await this.classModel
-        .findOneAndUpdate({ id: id }, updateClassDto, { new: true })
+        .findOneAndUpdate({ _id: _id }, updateClassDto, { new: true })
         .exec();
       return classUpdate;
     } catch (error) {
@@ -104,13 +103,13 @@ export class ClassService {
     }
   }
 
-  async remove(id: number) {
-    const classRemove = await this.classModel.findOne({ id }).exec();
+  async remove(_id: number) {
+    const classRemove = await this.classModel.findById({ _id }).exec();
     if (!classRemove) {
-      throw new NotFoundException(`${id} not Found`);
+      throw new NotFoundException(`${_id} not Found`);
     }
     await this.classModel
-      .findOneAndUpdate({ id: id }, { deleted_at: Date.now() })
+      .findOneAndUpdate({ _id: _id }, { deleted_at: Date.now() })
       .exec();
     throw new HttpException('Delete sucess', HttpStatus.OK);
   }

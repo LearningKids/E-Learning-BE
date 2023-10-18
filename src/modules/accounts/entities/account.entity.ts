@@ -16,7 +16,7 @@ export enum GENDER {
 @Schema({ versionKey: false, timestamps: true })
 export class Account extends BaseEntity {
   @Prop({ type: Number, unique: true })
-  id: number;
+  _id: number;
 
   @IsEmail({}, { message: 'Email is invalid' })
   @Prop({
@@ -87,7 +87,7 @@ AccountSchema.post('save', function (error, doc, next) {
 });
 
 AccountSchema.plugin(AutoIncrementID, {
-  field: 'id',
+  field: '_id',
   startAt: 5,
 } as AutoIncrementIDOptions);
 AccountSchema.plugin(panigate);
