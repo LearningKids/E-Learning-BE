@@ -2,7 +2,6 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { CreateQuestionDto } from './dto/create-question.dto';
@@ -13,20 +12,38 @@ import { Question } from './entities/question.entity';
 import { FilterQuestiontDto } from './dto/filter-question.dto';
 import paginationQuery from 'src/pagination';
 import queryFilters from 'src/pagination/filters';
+import { QuestionMetaService } from '../question_meta/question_meta.service';
+import methodBase from 'src/helpers/methodBase';
+import baseException from 'src/helpers/baseException';
 
 @Injectable()
 export class QuestionsService {
   constructor(
     @InjectModel(Question.name)
     private readonly questionModel: PaginateModel<Question>,
+    private questionMetaService: QuestionMetaService,
   ) {}
-  create(createQuestionDto: CreateQuestionDto) {
-    const createQuestion = new this.questionModel(createQuestionDto);
+
+  async create(createQuestionDto: CreateQuestionDto) {
+    const question_meta = [];
+    for (const element of createQuestionDto.question_meta) {
+      const meta = await this.questionMetaService.create(element);
+      question_meta.push(meta._id);
+    }
+    const dataQuestion = {
+      question_name: createQuestionDto.question_name,
+      question_type: createQuestionDto.question_type,
+      question_meta,
+    };
+
+    const createQuestion = new this.questionModel(dataQuestion);
     return createQuestion.save();
   }
 
   async findAll(pagination: FilterQuestiontDto) {
-    const options = paginationQuery(pagination.page, pagination.page_size);
+    const options = paginationQuery(pagination.page, pagination.page_size, [
+      'question_meta',
+    ]);
     const filters = queryFilters(pagination);
     const questions = await this.questionModel.paginate(filters, options);
     return questions;
@@ -34,46 +51,56 @@ export class QuestionsService {
 
   async findOne(_id: number) {
     try {
-      const question = await this.questionModel
-        .findById({ _id })
-        .populate({
-          path: 'question_sup.question_meta.image_sup',
-          select: '-deleted_at -createdAt -updatedAt',
-        })
-        .populate({
-          path: 'question_sup.answer_correct.image_sup',
-          select: '-deleted_at -createdAt -updatedAt',
-        })
-        .populate({
-          path: 'question_sup.answer_system.image_sup',
-          select: '-deleted_at -createdAt -updatedAt',
-        })
-        .populate({
-          path: 'question_sup.answer_check.image_sup',
-          select: '-deleted_at -createdAt -updatedAt',
-        })
-        .exec();
+      const question = await methodBase.findOneByCondition(
+        { _id },
+        this.questionModel,
+        ['question_meta'],
+      );
+      if (!question) {
+        baseException.NotFound(_id);
+      }
       return {
         data: question,
         status: 200,
       };
     } catch (error) {
-      throw new InternalServerErrorException('Server Error');
+      baseException.HttpException(error);
     }
   }
 
-  update(_id: number, updateQuestionDto: UpdateQuestionDto) {
-    return `This action updates a #${_id} question`;
+  async update(_id: number, updateQuestionDto: UpdateQuestionDto) {
+    try {
+      const question = await methodBase.findOneByCondition(
+        { _id },
+        this.questionModel,
+      );
+      if (!question) {
+        baseException.NotFound(_id);
+      }
+      for (const element of updateQuestionDto.question_meta) {
+        if (question.question_meta.includes(element.id)) {
+          await this.questionMetaService.update(element.id, element);
+        } else {
+          throw new NotFoundException(
+            `question_meta id_${element.id} don't fk`,
+          );
+        }
+      }
+      return this.findOne(_id);
+    } catch (error) {
+      baseException.HttpException(error);
+    }
   }
 
   async remove(_id: number) {
-    const account = await this.questionModel.findById({ _id }).exec();
-    if (!account) {
-      throw new NotFoundException(`${_id} not Found`);
+    try {
+      const question = await methodBase.remove({ _id }, this.questionModel);
+      if (!question) {
+        baseException.NotFound(_id);
+      }
+      throw new HttpException('Delete sucess', HttpStatus.OK);
+    } catch (error) {
+      baseException.HttpException(error);
     }
-    await this.questionModel
-      .findOneAndUpdate({ _id: _id }, { deleted_at: Date.now() })
-      .exec();
-    throw new HttpException('Delete sucess', HttpStatus.OK);
   }
 }

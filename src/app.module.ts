@@ -14,6 +14,7 @@ import { QuestionsModule } from './modules/questions/questions.module';
 import { ExcercisesModule } from './modules/exercises/excercises.module';
 import { ClassModule } from './modules/class/class.module';
 import { TypeModule } from './modules/type/type.module';
+import { QuestionMetaModule } from './modules/question_meta/question_meta.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -42,6 +43,7 @@ import { TypeModule } from './modules/type/type.module';
     ExcercisesModule,
     ClassModule,
     TypeModule,
+    QuestionMetaModule,
   ],
   controllers: [],
   providers: [],

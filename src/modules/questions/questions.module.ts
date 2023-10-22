@@ -8,6 +8,7 @@ import {
   getConnectionToken,
 } from '@nestjs/mongoose';
 import { Question, QuestionSchema } from './entities/question.entity';
+import { QuestionMetaModule } from '../question_meta/question_meta.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { Question, QuestionSchema } from './entities/question.entity';
         },
       },
     ]),
+    QuestionMetaModule,
   ],
   controllers: [QuestionsController],
   providers: [QuestionsService],

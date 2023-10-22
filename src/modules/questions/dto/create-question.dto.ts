@@ -1,24 +1,34 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsArray,
-  IsEmpty,
   IsEnum,
-  IsNotEmpty,
+  IsOptional,
   IsString,
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { QUESTION_TYPE_ENTITY } from 'src/core/constants';
-import { Types } from 'mongoose';
 
-class AnswerDTO {
+export class AnswerDTO {
   @IsArray()
-  @IsString({ each: true })
-  answer: string[];
+  answers: {
+    answer: string;
+    score: number;
+  };
 
-  image_sup: string;
+  @IsOptional()
+  @IsString()
+  image_sup?: string;
 }
-class QuestionMetaDTO {
+export class AnswerSystemDTO {
+  @IsArray()
+  answers: [string];
+
+  @IsOptional()
+  @IsString()
+  image_sup?: string;
+}
+export class QuestionMetaDTO {
   @ApiProperty({
     example: [],
     description: 'The question.',
@@ -31,6 +41,8 @@ class QuestionMetaDTO {
     example: 'Meta image',
     description: 'The image of the question if have.',
   })
+  @IsOptional()
+  @IsString()
   image_sup?: string;
 
   @ApiProperty({
@@ -42,18 +54,17 @@ class QuestionMetaDTO {
   answer_correct: AnswerDTO;
 
   @ApiProperty({
-    example: [],
+    example: {},
     description: 'The answer system of the question meta.',
   })
   @ValidateNested()
-  @Type(() => AnswerDTO)
-  answer_system: AnswerDTO;
+  @Type(() => AnswerSystemDTO)
+  answer_system: AnswerSystemDTO;
 }
 
 export class CreateQuestionDto {
   @ApiProperty({ example: 'So sanh', description: 'The name of the question.' })
   @IsString()
-  @IsNotEmpty()
   question_name: string;
 
   @ApiProperty({
@@ -72,11 +83,14 @@ export class CreateQuestionDto {
         question: ['1', '2', '3', '[]', '5', '[]'],
         image_sup: 'Meta image',
         answer_correct: {
-          answer: ['4', '6'],
+          answers: [
+            { answer: '4', score: 1 },
+            { answer: '6', score: 1 },
+          ],
           image_sup: 'Correct image',
         },
         answer_system: {
-          answer: ['6', '7', '4', '5'],
+          answers: ['7', '8'],
           image_sup: 'System image',
         },
       },

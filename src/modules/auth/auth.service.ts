@@ -2,8 +2,6 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
-  InternalServerErrorException,
-  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
@@ -17,6 +15,7 @@ import { IToken } from 'src/interfaces/Token.interface';
 import { EmailService } from '../mail/mail.service';
 import { roleNames } from 'src/core/constants';
 import { v4 as uuidv4 } from 'uuid';
+import baseException from 'src/helpers/baseException';
 
 @Injectable()
 export class AuthService {
@@ -84,7 +83,7 @@ export class AuthService {
   async verifyAccount(email: string, proxyHost: string) {
     const account = await this.getAccountByEmail(email);
     if (!account) {
-      throw new NotFoundException('Account not found !');
+      baseException.NotFound(email);
     }
     const token = this.generateAccessToken({ email });
     const uri = `${proxyHost}?token=${token}`;
@@ -121,7 +120,7 @@ export class AuthService {
       await this.getAccountByEmail(email);
       const accountDetail = await this.accountModel.findOne({ email });
       if (!accountDetail) {
-        throw new NotFoundException('Account not found !');
+        baseException.NotFound(email);
       }
       await this.accountModel.findOneAndUpdate(
         { email },

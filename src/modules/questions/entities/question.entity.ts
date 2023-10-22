@@ -7,6 +7,7 @@ import {
 } from '@typegoose/auto-increment';
 import { QUESTION_TYPE_ENTITY } from 'src/core/constants';
 import { BadRequestException } from '@nestjs/common';
+import { Types } from 'mongoose';
 
 @Schema({ versionKey: false, timestamps: true })
 export class Question extends BaseEntity {
@@ -28,64 +29,26 @@ export class Question extends BaseEntity {
   @Prop({
     type: [
       {
-        id_meta: {
-          type: Number,
-          unique: true,
-        },
-        question: [String],
-        image_sup: {
-          type: String,
-          required: false,
-          default: null,
-        },
-        answer_correct: {
-          answer: [String],
-          image_sup: {
-            type: String,
-            required: false,
-            default: null,
-          },
-        },
-        answer_system: {
-          answer: [String],
-          image_sup: {
-            type: String,
-            required: false,
-            default: null,
-          },
-        },
+        type: Number,
+        ref: 'QuestionMeta',
+        required: true,
       },
     ],
-    default: [],
   })
-  question_meta: [
-    {
-      id_meta: number;
-      question: [string];
-      image_sup?: string;
-      answer_correct: {
-        answer: string[];
-        image_sup: string;
-      };
-      answer_system: {
-        answer: string[];
-        image_sup: string;
-      };
-    },
-  ];
+  question_meta: number[];
 }
 
 export type QuestionDocument = Question & Document;
 export const QuestionSchema = SchemaFactory.createForClass(Question);
 
-QuestionSchema.post('save', function (error, doc, next) {
-  if (error.code === 11000) {
-    const [fieldName, value] = Object.entries(error.keyValue)[0];
-    throw new BadRequestException(`Duplicate ${[fieldName]} : ${value}`);
-  } else {
-    next();
-  }
-});
+// QuestionSchema.post('save', function (error, doc, next) {
+//   if (error.code === 11000) {
+//     const [fieldName, value] = Object.entries(error.keyValue)[0];
+//     throw new BadRequestException(`Duplicate ${[fieldName]} : ${value}`);
+//   } else {
+//     next();
+//   }
+// });
 QuestionSchema.plugin(AutoIncrementID, {
   field: '_id',
   startAt: 1,

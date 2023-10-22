@@ -3,20 +3,19 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
-  InternalServerErrorException,
-  NotFoundException,
 } from '@nestjs/common';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
 import { Account } from './entities/account.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { PaginateModel } from 'mongoose';
-import { BlockAccountDto } from './dto/block-account.dto';
 import paginationQuery from 'src/pagination';
 import { FilterAccountDto } from './dto/filter-account.dto';
 import queryFilters from 'src/pagination/filters';
 import { AuthService } from '../auth/auth.service';
 import { EmailService } from '../mail/mail.service';
+import methodBase from 'src/helpers/methodBase';
+import baseException from 'src/helpers/baseException';
 
 @Injectable()
 export class AccountsService {
@@ -45,10 +44,16 @@ export class AccountsService {
   //! detail
   async findOne(_id: number): Promise<Account> {
     try {
-      const account = await this.accountModel.findById(_id);
+      const account = await methodBase.findOneByCondition(
+        { _id },
+        this.accountModel,
+      );
+      if (!account) {
+        baseException.NotFound(_id);
+      }
       return account;
     } catch (error) {
-      throw new InternalServerErrorException('Server Error');
+      baseException.HttpException(error);
     }
   }
   //! update
@@ -57,84 +62,106 @@ export class AccountsService {
     updateAccountDto: UpdateAccountDto,
   ): Promise<Account> {
     try {
-      const account = await this.accountModel.findById({ _id }).exec();
-      if (!account) {
-        throw new NotFoundException(`${_id} not Found`);
+      const accountUpdate = await methodBase.findOneUpdate(
+        { _id },
+        this.accountModel,
+        updateAccountDto,
+      );
+      if (!accountUpdate) {
+        baseException.NotFound(_id);
       }
-      const accountUpdate = await this.accountModel
-        .findOneAndUpdate({ _id }, updateAccountDto, { new: true })
-        .exec();
       return accountUpdate;
     } catch (error) {
-      throw new HttpException(`Error`, HttpStatus.INTERNAL_SERVER_ERROR);
+      baseException.HttpException(error);
     }
   }
   //! block
   async blockAccount(_id: number) {
     try {
-      const account = await this.accountModel.findById({ _id }).exec();
+      const account = await methodBase.findOneByCondition(
+        { _id },
+        this.accountModel,
+      );
       if (!account) {
-        throw new NotFoundException(`${_id} not Found`);
+        baseException.NotFound(_id);
       }
-      const accountBlock = await this.accountModel
-        .findOneAndUpdate(
-          { _id: _id },
-          { isBlock: !account.isBlock },
-          { new: true },
-        )
-        .exec();
+      const accountBlock = await methodBase.findOneUpdate(
+        _id,
+        this.accountModel,
+        { isBlock: !account.isBlock },
+      );
       return accountBlock;
     } catch (error) {
-      throw new HttpException(`Error`, HttpStatus.INTERNAL_SERVER_ERROR);
+      baseException.HttpException(error);
     }
   }
   //! remove
   async remove(_id: string) {
-    const account = await this.accountModel.findById({ _id }).exec();
-    if (!account) {
-      throw new NotFoundException(`${_id} not Found`);
+    try {
+      const accountRemove = await methodBase.remove({ _id }, this.accountModel);
+      if (!accountRemove) {
+        baseException.NotFound(_id);
+      }
+      throw new HttpException('Delete Success', HttpStatus.OK);
+    } catch (error) {
+      baseException.HttpException(error);
     }
-    await this.accountModel
-      .findOneAndUpdate({ _id: _id }, { deleted_at: Date.now() })
-      .exec();
-    throw new HttpException('Delete sucess', HttpStatus.OK);
   }
 
   //! change password
   async changePassword(password: string, newpassword: string, email: string) {
-    const account = await this.accountModel
-      .findOne({ email })
-      .select('+password')
-      .exec();
-    const checkPassword = await this.authService.generateFunc(
-      password,
-      account.password,
-    );
-    if (!checkPassword) {
-      throw new BadRequestException('Password incorect');
+    try {
+      const account = await methodBase.findOneByCondition(
+        { email },
+        this.accountModel,
+        ['+password'],
+      );
+      const checkPassword = await this.authService.generateFunc(
+        password,
+        account.password,
+      );
+      if (!checkPassword) {
+        throw new BadRequestException('Password incorect');
+      }
+      const passwordCover = await this.authService.hashFunc(newpassword);
+      await this.accountModel.findOneAndUpdate(
+        { email },
+        { password: passwordCover, refreshToken: null },
+      );
+      throw new HttpException('Change password success', HttpStatus.OK);
+    } catch (error) {
+      baseException.HttpException(error);
     }
-    const passwordCover = await this.authService.hashFunc(newpassword);
-    await this.accountModel.findOneAndUpdate(
-      { email },
-      { password: passwordCover, refreshToken: null },
-    );
-    throw new HttpException('Change password success', HttpStatus.OK);
   }
   //! upload avatar
   async uploadAvatar(email: string, avatar: string) {
-    const account = await this.accountModel.findOneAndUpdate(
-      { email },
-      { avatar: avatar },
-      { new: true },
-    );
-    return account;
+    try {
+      const account = await methodBase.findOneUpdate(
+        { email },
+        this.accountModel,
+        { avatar: avatar },
+      );
+      if (!account) {
+        baseException.NotFound(email);
+      }
+      return account;
+    } catch (error) {
+      baseException.HttpException(error);
+    }
   }
   //! Find Account by Email
   async getAccountByEmail(email: string): Promise<Account> {
-    const account = await this.accountModel.findOne({ email }).exec();
-    if (!account) {
-      throw new NotFoundException(`${email} not found`);
+    try {
+      const account = await methodBase.findOneByCondition(
+        { email },
+        this.accountModel,
+      );
+      if (!account) {
+        baseException.NotFound(email);
+      }
+      return account;
+    } catch (error) {
+      baseException.HttpException(error);
     }
-    return account;
   }
 }

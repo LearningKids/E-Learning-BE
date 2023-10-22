@@ -2,7 +2,7 @@ import { PartialType } from '@nestjs/mapped-types';
 import { CreateClassDto } from './create-class.dto';
 import { OmitType } from '@nestjs/swagger';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsDate, IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { IsArray, IsEnum, IsNotEmpty, IsString } from 'class-validator';
 import { Types } from 'mongoose';
 import { CLASS_STATUS, CLASS_TYPES } from 'src/core/constants';
 
