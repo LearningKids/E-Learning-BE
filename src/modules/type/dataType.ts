@@ -12,3 +12,9 @@ export const QUESTION_TYPE: ISelect[] = [
   { label: 'Compare', value: 1 },
   { label: 'Completion', value: 2 },
 ];
+
+export const EXCERCISE_TYPE: ISelect[] = [
+  { label: 'Test', value: 1 },
+  { label: 'HomeWork', value: 2 },
+  { label: 'Trial', value: 3 },
+];

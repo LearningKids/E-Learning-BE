@@ -6,7 +6,7 @@ import {
   AutoIncrementID,
   AutoIncrementIDOptions,
 } from '@typegoose/auto-increment';
-import { EXCERCISE_TYPE } from 'src/core/constants';
+import { EXCERCISE_TYPE_ENTITY } from 'src/core/constants';
 import { BadRequestException } from '@nestjs/common';
 
 @Schema({ versionKey: false, timestamps: true })
@@ -23,26 +23,26 @@ export class Exercise extends BaseEntity {
 
   @Prop({
     required: true,
-    enum: EXCERCISE_TYPE,
-    default: EXCERCISE_TYPE.trial_learning,
+    enum: EXCERCISE_TYPE_ENTITY,
+    default: EXCERCISE_TYPE_ENTITY.trial_learning,
   })
   excercise_type: string;
 
   @Prop({
-    type: Types.ObjectId,
+    type: Number,
     ref: 'Account',
   })
-  author: Types.ObjectId;
+  author: number;
 
   @Prop({
     type: [
       {
-        type: Types.ObjectId,
+        type: Number,
         ref: 'Question',
       },
     ],
   })
-  questions: Types.ObjectId[];
+  questions: number[];
 }
 export type ExcerciseDocument = Exercise & Document;
 export const ExcerciseSchema = SchemaFactory.createForClass(Exercise);

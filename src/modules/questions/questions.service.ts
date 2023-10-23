@@ -57,7 +57,7 @@ export class QuestionsService {
         ['question_meta'],
       );
       if (!question) {
-        baseException.NotFound(_id);
+        baseException.NotFound(`question id ${_id}`);
       }
       return {
         data: question,
@@ -75,7 +75,7 @@ export class QuestionsService {
         this.questionModel,
       );
       if (!question) {
-        baseException.NotFound(_id);
+        baseException.NotFound(`question id ${_id}`);
       }
       for (const element of updateQuestionDto.question_meta) {
         if (question.question_meta.includes(element.id)) {

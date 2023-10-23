@@ -4,6 +4,7 @@ import { IsEnum, IsOptional } from 'class-validator';
 export enum Types {
   Question = 'question',
   ImageSup = 'image',
+  Exercise = 'exercise',
 }
 
 export class GetTypeDto {

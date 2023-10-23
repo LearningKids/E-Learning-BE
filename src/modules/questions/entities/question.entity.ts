@@ -6,8 +6,6 @@ import {
   AutoIncrementIDOptions,
 } from '@typegoose/auto-increment';
 import { QUESTION_TYPE_ENTITY } from 'src/core/constants';
-import { BadRequestException } from '@nestjs/common';
-import { Types } from 'mongoose';
 
 @Schema({ versionKey: false, timestamps: true })
 export class Question extends BaseEntity {

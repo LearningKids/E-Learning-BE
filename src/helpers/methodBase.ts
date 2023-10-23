@@ -16,7 +16,7 @@ class MethodBase {
   async findOneByCondition(
     conditions: any,
     model: PaginateModel<any>,
-    reference?: [string],
+    reference?: any,
     select?: [string],
   ) {
     let query = model.findOne({ ...conditions, deleted_at: null });

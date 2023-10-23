@@ -1,8 +1,14 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateExcerciseDto } from './create-excercise.dto';
 import { ApiProperty, OmitType } from '@nestjs/swagger';
-import { ArrayNotEmpty, IsEnum, IsNotEmpty, IsString } from 'class-validator';
-import { EXCERCISE_TYPE } from 'src/core/constants';
+import {
+  ArrayNotEmpty,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+} from 'class-validator';
+import { EXCERCISE_TYPE_ENTITY } from 'src/core/constants';
 import { Types } from 'mongoose';
 
 export class UpdateExcerciseDto extends PartialType(
@@ -17,25 +23,25 @@ export class UpdateExcerciseDto extends PartialType(
   exercise_name: string;
 
   @ApiProperty({
-    example: EXCERCISE_TYPE.trial_learning,
+    example: EXCERCISE_TYPE_ENTITY.trial_learning,
     description: 'exercise type',
-    enum: EXCERCISE_TYPE,
+    enum: EXCERCISE_TYPE_ENTITY,
   })
   @IsNotEmpty()
-  @IsEnum(EXCERCISE_TYPE)
+  @IsEnum(EXCERCISE_TYPE_ENTITY)
   excercise_type: string;
 
   @ApiProperty({
     description: 'Author created',
-    example: 'Meta author',
+    example: 2,
   })
-  @IsString()
-  author: Types.ObjectId;
+  @IsNumber()
+  author: number;
 
   @ApiProperty({
     description: 'List question',
-    example: [],
+    example: [4, 5],
   })
   @ArrayNotEmpty()
-  questions: Types.ObjectId[];
+  questions: number[];
 }

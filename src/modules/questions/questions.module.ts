@@ -28,5 +28,6 @@ import { QuestionMetaModule } from '../question_meta/question_meta.module';
   ],
   controllers: [QuestionsController],
   providers: [QuestionsService],
+  exports: [QuestionsService],
 })
 export class QuestionsModule {}

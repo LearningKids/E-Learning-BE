@@ -29,10 +29,10 @@ export enum QUESTION_TYPE_ENTITY {
   compare = 'compare',
   completion = 'completion',
 }
-export enum EXCERCISE_TYPE {
-  test = 'TEST',
-  homework = 'HOMEWORK',
-  trial_learning = 'TRIAL_LEARNING',
+export enum EXCERCISE_TYPE_ENTITY {
+  test = 'Test',
+  homework = 'Homework',
+  trial_learning = 'Trial',
 }
 
 export enum CLASS_STATUS {

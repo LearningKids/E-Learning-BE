@@ -7,6 +7,7 @@ import {
   getConnectionToken,
 } from '@nestjs/mongoose';
 import { Exercise, ExcerciseSchema } from './entities/excercise.entity';
+import { QuestionsModule } from '../questions/questions.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { Exercise, ExcerciseSchema } from './entities/excercise.entity';
         },
       },
     ]),
+    QuestionsModule,
   ],
   controllers: [ExcercisesController],
   providers: [ExcercisesService],
