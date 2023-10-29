@@ -9,6 +9,7 @@ import {
 import { Lesson, LessonSchema } from './entities/lesson.entity';
 
 import mongoose from 'mongoose';
+import { ExcercisesModule } from '../exercises/excercises.module';
 @Module({
   imports: [
     MongooseModule.forFeatureAsync([
@@ -23,15 +24,10 @@ import mongoose from 'mongoose';
         },
       },
     ]),
+    ExcercisesModule,
   ],
   controllers: [LessonsController],
   providers: [LessonsService],
+  exports: [LessonsService],
 })
 export class LessonsModule {}
-// export class LessonsModule implements NestModule {
-//   configure(consumer: MiddlewareConsumer) {
-//     consumer
-//       .apply(EmailExistsMiddleware)
-//       .forRoutes({ path: `${routes.account}`, method: RequestMethod.POST });
-//   }
-// }

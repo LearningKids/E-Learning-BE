@@ -7,22 +7,22 @@ export const roleNames = {
   student_trial: 'STUDENT_TRIAl',
 };
 
-export enum LESSON_TYPE {
-  default_lesson = 'DEFEAULT_LESSON', //!  lesson default belongsTo course
-  created_lesson = 'CREATE_LESSON', //! lesson created by admin or teacher
+export enum LESSON_TYPE_ENTITY {
+  default_lesson = 'Default_lesson', //!  lesson default belongsTo course
+  created_lesson = 'Create_lesson', //! lesson created by admin or teacher
 }
 export enum IMAGESUP_TYPE {
   other = 1,
   fruit = 2,
   animal = 3,
 }
-export enum COURSE_TYPE {
-  trial = 'TRIAL',
-  charged = 'CHARGED',
+export enum COURSE_TYPE_ENTITY {
+  trial = 'Trial',
+  charged = 'Charged',
 }
-export enum SUBJECT {
-  Math = 'MATH',
-  English = 'ENGLISH',
+export enum SUBJECT_ENTITY {
+  Math = 'Math',
+  English = 'English',
 }
 
 export enum QUESTION_TYPE_ENTITY {

@@ -7,6 +7,7 @@ import {
   getConnectionToken,
 } from '@nestjs/mongoose';
 import { Course, CourseSchema } from './entities/course.entity';
+import { LessonsModule } from '../lessons/lessons.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { Course, CourseSchema } from './entities/course.entity';
         },
       },
     ]),
+    LessonsModule,
   ],
   controllers: [CoursesController],
   providers: [CoursesService],

@@ -1,6 +1,6 @@
-import { IsString, IsEnum } from 'class-validator';
+import { IsString, IsEnum, IsArray } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { SUBJECT, LESSON_TYPE } from 'src/core/constants';
+import { SUBJECT_ENTITY, LESSON_TYPE_ENTITY } from 'src/core/constants';
 
 export class CreateLessonDto {
   @ApiProperty({
@@ -12,20 +12,20 @@ export class CreateLessonDto {
 
   @ApiProperty({
     description: 'Loại bài học',
-    enum: LESSON_TYPE,
-    default: LESSON_TYPE.default_lesson,
+    enum: LESSON_TYPE_ENTITY,
+    default: LESSON_TYPE_ENTITY.default_lesson,
   })
-  @IsEnum(LESSON_TYPE)
+  @IsEnum(LESSON_TYPE_ENTITY)
   lesson_type: string;
 
   @ApiProperty({
     description: 'Danh sách môn học',
     isArray: true,
-    enum: SUBJECT,
-    default: [SUBJECT.Math],
+    enum: SUBJECT_ENTITY,
+    default: [SUBJECT_ENTITY.Math],
   })
-  @IsEnum(SUBJECT, { each: true })
-  subjects: SUBJECT[];
+  @IsEnum(SUBJECT_ENTITY, { each: true })
+  subjects: SUBJECT_ENTITY[];
 
   @ApiProperty({
     description: 'Slider',
@@ -36,15 +36,8 @@ export class CreateLessonDto {
 
   @ApiProperty({
     description: 'Exercises',
-    example: 'Nội dung bài tập',
+    example: [1, 2],
   })
-  @IsString()
-  exercises: string;
-
-  @ApiProperty({
-    description: 'Homework',
-    example: 'Nội dung bài tập về nhà',
-  })
-  @IsString()
-  homework: string;
+  @IsArray()
+  exercises: number[];
 }

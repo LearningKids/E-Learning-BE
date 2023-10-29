@@ -5,6 +5,9 @@ export enum Types {
   Question = 'question',
   ImageSup = 'image',
   Exercise = 'exercise',
+  Subject = 'subject',
+  Lesson = 'lesson',
+  Course = 'course',
 }
 
 export class GetTypeDto {

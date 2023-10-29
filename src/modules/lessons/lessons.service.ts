@@ -13,21 +13,45 @@ import { PaginateModel } from 'mongoose';
 import { FilterLessontDto } from './dto/filter-lesson.dto';
 import paginationQuery from 'src/pagination';
 import queryFilters from 'src/pagination/filters';
+import { ExcercisesService } from '../exercises/excercises.service';
+import baseException from 'src/helpers/baseException';
+import methodBase from 'src/helpers/methodBase';
 
 @Injectable()
 export class LessonsService {
   constructor(
     @InjectModel(Lesson.name)
     private readonly lessonModel: PaginateModel<Lesson>,
+    private exerciseService: ExcercisesService,
   ) {}
   //!create
   async create(createLessonDto: CreateLessonDto): Promise<Lesson> {
-    const createLesson = new this.lessonModel(createLessonDto);
-    return createLesson.save();
+    try {
+      for (const idExercise of createLessonDto.exercises) {
+        await this.exerciseService.findOne(idExercise);
+      }
+      const createLesson = new this.lessonModel(createLessonDto);
+      return createLesson.save();
+    } catch (error) {
+      baseException.HttpException(error);
+    }
   }
   //! all
   async findAll(pagination: FilterLessontDto) {
-    const options = paginationQuery(pagination.page, pagination.page_size);
+    const options = paginationQuery(pagination.page, pagination.page_size, [
+      {
+        path: 'exercises',
+        select: '-deleted_at -createdAt -updatedAt',
+        populate: {
+          path: 'questions',
+          select: '-deleted_at -createdAt -updatedAt',
+          populate: {
+            path: 'question_meta',
+            select: '-deleted_at -createdAt -updatedAt',
+          },
+        },
+      },
+    ]);
     const filters = queryFilters(pagination);
     const lessons = await this.lessonModel.paginate(filters, options);
     return lessons;
@@ -35,39 +59,62 @@ export class LessonsService {
   //! detail
   async findOne(_id: number) {
     try {
-      const lesson = await this.lessonModel.findById({ _id }).exec();
-      return {
-        data: lesson,
-        status: 200,
-      };
+      const options = [
+        {
+          path: 'exercises',
+          select: '-deleted_at -createdAt -updatedAt',
+          populate: {
+            path: 'questions',
+            select: '-deleted_at -createdAt -updatedAt',
+            populate: {
+              path: 'question_meta',
+              select: '-deleted_at -createdAt -updatedAt',
+            },
+          },
+        },
+      ];
+      const lesson = await methodBase.findOneByCondition(
+        { _id },
+        this.lessonModel,
+        options,
+      );
+      if (!lesson) {
+        baseException.NotFound(`lesson id ${_id}`);
+      }
+      return lesson;
     } catch (error) {
-      throw new InternalServerErrorException('Server Error');
+      baseException.HttpException(error);
     }
   }
   //! update
   async update(_id: number, updateLessonDto: UpdateLessonDto): Promise<Lesson> {
     try {
-      const account = await this.lessonModel.findById({ _id }).exec();
-      if (!account) {
-        throw new NotFoundException(`${_id} not Found`);
+      for (const idExercise of updateLessonDto.exercises) {
+        await this.exerciseService.findOne(idExercise);
       }
-      const accountUpdate = await this.lessonModel
-        .findOneAndUpdate({ _id: _id }, updateLessonDto, { new: true })
-        .exec();
-      return accountUpdate;
+      const lessonUpdate = await methodBase.findOneUpdate(
+        { _id },
+        this.lessonModel,
+        updateLessonDto,
+      );
+      if (!lessonUpdate) {
+        baseException.NotFound(`lesson id ${_id}`);
+      }
+      return lessonUpdate;
     } catch (error) {
-      throw new InternalServerErrorException('Server Error');
+      baseException.HttpException(error);
     }
   }
   //!remove
   async remove(_id: number) {
-    const account = await this.lessonModel.findById({ _id }).exec();
-    if (!account) {
-      throw new NotFoundException(`${_id} not Found`);
+    try {
+      const lessonRemove = await methodBase.remove({ _id }, this.lessonModel);
+      if (!lessonRemove) {
+        baseException.NotFound(`lesson id ${_id}`);
+      }
+      throw new HttpException('Delete sucess', HttpStatus.OK);
+    } catch (error) {
+      baseException.HttpException(error);
     }
-    await this.lessonModel
-      .findOneAndUpdate({ _id: _id }, { deleted_at: Date.now() })
-      .exec();
-    throw new HttpException('Delete sucess', HttpStatus.OK);
   }
 }

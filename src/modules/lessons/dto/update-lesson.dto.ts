@@ -1,8 +1,8 @@
 import { OmitType } from '@nestjs/mapped-types';
 import { CreateLessonDto } from './create-lesson.dto';
 import { ApiPropertyOptional, PartialType } from '@nestjs/swagger';
-import { IsEnum, IsOptional, IsString } from 'class-validator';
-import { LESSON_TYPE, SUBJECT } from 'src/core/constants';
+import { IsArray, IsEnum, IsOptional, IsString } from 'class-validator';
+import { LESSON_TYPE_ENTITY, SUBJECT_ENTITY } from 'src/core/constants';
 
 export class UpdateLessonDto extends PartialType(
   OmitType(CreateLessonDto, [] as const),
@@ -17,22 +17,22 @@ export class UpdateLessonDto extends PartialType(
 
   @ApiPropertyOptional({
     description: 'Loại bài học',
-    enum: LESSON_TYPE,
-    default: LESSON_TYPE.default_lesson,
+    enum: LESSON_TYPE_ENTITY,
+    default: LESSON_TYPE_ENTITY.default_lesson,
   })
   @IsOptional()
-  @IsEnum(LESSON_TYPE)
+  @IsEnum(LESSON_TYPE_ENTITY)
   lesson_type?: string;
 
   @ApiPropertyOptional({
     description: 'Danh sách môn học',
     isArray: true,
-    enum: SUBJECT,
-    default: [SUBJECT.Math],
+    enum: SUBJECT_ENTITY,
+    default: [SUBJECT_ENTITY.Math],
   })
   @IsOptional()
-  @IsEnum(SUBJECT, { each: true })
-  subjects?: SUBJECT[];
+  @IsEnum(SUBJECT_ENTITY, { each: true })
+  subjects?: SUBJECT_ENTITY[];
 
   @ApiPropertyOptional({
     description: 'Slider',
@@ -44,17 +44,7 @@ export class UpdateLessonDto extends PartialType(
 
   @ApiPropertyOptional({
     description: 'Exercises',
-    example: 'Nội dung bài tập',
+    example: [1, 2],
   })
-  @IsOptional()
-  @IsString()
-  exercises?: string;
-
-  @ApiPropertyOptional({
-    description: 'Homework',
-    example: 'Nội dung bài tập về nhà',
-  })
-  @IsOptional()
-  @IsString()
-  homework?: string;
+  exercises?: number[];
 }

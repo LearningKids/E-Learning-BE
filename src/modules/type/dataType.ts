@@ -18,3 +18,21 @@ export const EXCERCISE_TYPE: ISelect[] = [
   { label: 'HomeWork', value: 2 },
   { label: 'Trial', value: 3 },
 ];
+
+export const SUBJECT: ISelect[] = [
+  { label: 'Math', value: 1 },
+  { label: 'English', value: 2 },
+];
+
+export const LESSON_TYPE: ISelect[] = [
+  { label: 'Default_lesson', value: 1 },
+  {
+    label: 'Create_lesson',
+    value: 2,
+  },
+];
+
+export const COURSE_TYPE: ISelect[] = [
+  { label: 'Trial', value: 1 },
+  { label: 'Charged', value: 2 },
+];

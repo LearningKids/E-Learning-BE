@@ -6,7 +6,7 @@ import {
   AutoIncrementID,
   AutoIncrementIDOptions,
 } from '@typegoose/auto-increment';
-import { COURSE_TYPE } from 'src/core/constants';
+import { COURSE_TYPE_ENTITY } from 'src/core/constants';
 import { BadRequestException } from '@nestjs/common';
 
 @Schema({ versionKey: false, timestamps: true })
@@ -30,8 +30,8 @@ export class Course extends BaseEntity {
 
   @Prop({
     required: true,
-    enum: COURSE_TYPE,
-    default: COURSE_TYPE.charged,
+    enum: COURSE_TYPE_ENTITY,
+    default: COURSE_TYPE_ENTITY.charged,
   })
   course_type: string;
 
@@ -44,7 +44,7 @@ export class Course extends BaseEntity {
   @Prop({
     type: [
       {
-        type: Types.ObjectId,
+        type: Number,
         ref: 'Lesson',
       },
     ],

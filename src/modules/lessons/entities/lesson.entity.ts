@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { BaseEntity } from 'src/shared/base/base.entity';
 import * as panigate from 'mongoose-paginate-v2';
-import { LESSON_TYPE, SUBJECT } from 'src/core/constants';
+import { LESSON_TYPE_ENTITY, SUBJECT_ENTITY } from 'src/core/constants';
 import { HydratedDocument } from 'mongoose';
 import {
   AutoIncrementID,
@@ -16,7 +16,6 @@ export class Lesson extends BaseEntity {
 
   @Prop({
     required: true,
-    unique: true,
     trim: true,
     type: String,
   })
@@ -24,8 +23,8 @@ export class Lesson extends BaseEntity {
 
   @Prop({
     required: true,
-    enum: LESSON_TYPE,
-    default: LESSON_TYPE.default_lesson,
+    enum: LESSON_TYPE_ENTITY,
+    default: LESSON_TYPE_ENTITY.default_lesson,
   })
   lesson_type: string;
 
@@ -34,30 +33,27 @@ export class Lesson extends BaseEntity {
       {
         required: true,
         type: String,
-        enum: SUBJECT,
+        enum: SUBJECT_ENTITY,
         default: [],
       },
     ],
   })
-  subjects: SUBJECT[];
+  subjects: SUBJECT_ENTITY[];
 
   @Prop({
     type: String,
-    required: true,
   })
   slider: string;
 
   @Prop({
-    type: String,
-    required: true,
+    type: [
+      {
+        type: Number,
+        ref: 'Exercise',
+      },
+    ],
   })
-  exercises: string;
-
-  @Prop({
-    type: String,
-    required: true,
-  })
-  homework: string;
+  exercises: number[];
 }
 export type LessonDocument = HydratedDocument<Lesson>;
 

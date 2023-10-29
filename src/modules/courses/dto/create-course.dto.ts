@@ -6,8 +6,7 @@ import {
   IsEnum,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { COURSE_TYPE } from 'src/core/constants';
-import { Types } from 'mongoose';
+import { COURSE_TYPE_ENTITY } from 'src/core/constants';
 
 export class CreateCourseDto {
   @ApiProperty({ example: 'Tên khóa học', description: 'Tên khóa học' })
@@ -21,12 +20,12 @@ export class CreateCourseDto {
   course_description: string;
 
   @ApiProperty({
-    example: COURSE_TYPE.charged,
+    example: COURSE_TYPE_ENTITY.charged,
     description: 'Loại khóa học',
-    enum: COURSE_TYPE,
+    enum: COURSE_TYPE_ENTITY,
   })
   @IsNotEmpty()
-  @IsEnum(COURSE_TYPE)
+  @IsEnum(COURSE_TYPE_ENTITY)
   course_type: string;
 
   @ApiProperty({ example: 10, description: 'Số lượng bài học' })
@@ -35,11 +34,11 @@ export class CreateCourseDto {
   number_lessons: number;
 
   @ApiProperty({
-    example: ['615a6e8a1e4bbf001f2a5a4c', '615a6e8a1e4bbf001f2a5a4d'],
+    example: [2],
     description: 'Nội dung bài học',
-    type: [String],
+    type: [Number],
   })
   @IsNotEmpty()
   @ArrayNotEmpty()
-  content_lesson: Types.ObjectId[];
+  content_lesson: number[];
 }
