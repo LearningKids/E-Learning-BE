@@ -76,17 +76,19 @@ export class AccountsService {
     }
   }
   //! block
-  async blockAccount(_id: number) {
+  async blockAccount(_id: number): Promise<Account> {
     try {
       const account = await methodBase.findOneByCondition(
         { _id },
         this.accountModel,
       );
+      console.log({ account });
+
       if (!account) {
         baseException.NotFound(_id);
       }
       const accountBlock = await methodBase.findOneUpdate(
-        _id,
+        { _id },
         this.accountModel,
         { isBlock: !account.isBlock },
       );

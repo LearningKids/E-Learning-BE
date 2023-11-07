@@ -167,13 +167,15 @@ export class AuthService {
   //! get AccessToken When expried
   async getAccessToken(refreshToken: string) {
     try {
-      const decoded = await this.jwtService.verify(refreshToken, {
+      const decoded = this.jwtService.verify(refreshToken, {
         secret: process.env.refreshToken,
       });
+
       const checkRefreshToken = await this.refreshTokenMatchWithAccount(
         decoded.email,
         refreshToken,
       );
+
       if (checkRefreshToken) {
         const accessToken = this.generateAccessToken({
           email: checkRefreshToken.email,
@@ -182,7 +184,7 @@ export class AuthService {
         return { accessToken: accessToken };
       }
     } catch (error) {
-      throw new HttpException('RefreshToken incorrect', HttpStatus.BAD_REQUEST);
+      baseException.HttpException(error);
     }
   }
   //! Check_refreshToken
