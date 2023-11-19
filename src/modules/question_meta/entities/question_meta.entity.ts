@@ -10,8 +10,8 @@ export class QuestionMeta extends BaseEntity {
   @Prop({ type: Number, unique: true })
   _id: number;
 
-  @Prop({ type: [String], required: true })
-  question: [string];
+  @Prop({ type: String, required: true })
+  question: string;
 
   @Prop({ type: String, required: false, default: null })
   image_sup: string;
@@ -38,21 +38,6 @@ export class QuestionMeta extends BaseEntity {
         score: number;
       },
     ];
-    image_sup: string;
-  };
-
-  @Prop({
-    type: {
-      answers: [String],
-      image_sup: {
-        type: String,
-        required: false,
-        default: null,
-      },
-    },
-  })
-  answer_system: {
-    answers: [string];
     image_sup: string;
   };
 }

@@ -1,20 +1,16 @@
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { CreateQuestionDto } from './dto/create-question.dto';
-import { UpdateQuestionDto } from './dto/update-question.dto';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { PaginateModel } from 'mongoose';
-import { Question } from './entities/question.entity';
-import { FilterQuestiontDto } from './dto/filter-question.dto';
+import baseException from 'src/helpers/baseException';
+import methodBase from 'src/helpers/methodBase';
 import paginationQuery from 'src/pagination';
 import queryFilters from 'src/pagination/filters';
 import { QuestionMetaService } from '../question_meta/question_meta.service';
-import methodBase from 'src/helpers/methodBase';
-import baseException from 'src/helpers/baseException';
+import { CreateQuestionDto } from './dto/create-question.dto';
+import { FilterQuestiontDto } from './dto/filter-question.dto';
+import { UpdateQuestionDto } from './dto/update-question.dto';
+import { Question } from './entities/question.entity';
+import * as lodash from 'lodash';
 
 @Injectable()
 export class QuestionsService {
@@ -24,7 +20,7 @@ export class QuestionsService {
     private questionMetaService: QuestionMetaService,
   ) {}
 
-  async create(createQuestionDto: CreateQuestionDto) {
+  async create(createQuestionDto: CreateQuestionDto, author: number) {
     const question_meta = [];
     for (const element of createQuestionDto.question_meta) {
       const meta = await this.questionMetaService.create(element);
@@ -33,6 +29,8 @@ export class QuestionsService {
     const dataQuestion = {
       question_name: createQuestionDto.question_name,
       question_type: createQuestionDto.question_type,
+      question_description: createQuestionDto.question_description,
+      author,
       question_meta,
     };
 
@@ -43,6 +41,7 @@ export class QuestionsService {
   async findAll(pagination: FilterQuestiontDto) {
     const options = paginationQuery(pagination.page, pagination.page_size, [
       'question_meta',
+      'author',
     ]);
     const filters = queryFilters(pagination);
     const questions = await this.questionModel.paginate(filters, options);
@@ -77,15 +76,33 @@ export class QuestionsService {
       if (!question) {
         baseException.NotFound(`question id ${_id}`);
       }
+      const questionUpdate = lodash.map(updateQuestionDto.question_meta, 'id');
+      const differentQuestion = lodash.difference(
+        question.question_meta,
+        questionUpdate,
+      );
+      if (differentQuestion.length > 0) {
+        differentQuestion.map(async (question) => {
+          await this.questionMetaService.remove(question);
+        });
+      }
+      const arrayMeta = [];
       for (const element of updateQuestionDto.question_meta) {
         if (question.question_meta.includes(element.id)) {
+          arrayMeta.push(element.id);
           await this.questionMetaService.update(element.id, element);
         } else {
-          throw new NotFoundException(
-            `question_meta id_${element.id} don't fk`,
-          );
+          const qs_metaNew = await this.questionMetaService.create(element);
+          arrayMeta.push(qs_metaNew._id);
         }
       }
+      await methodBase.findOneUpdate({ _id }, this.questionModel, {
+        question_name: updateQuestionDto.question_name,
+        question_type: updateQuestionDto.question_type,
+        question_description: updateQuestionDto.question_description,
+        question_meta: arrayMeta,
+      });
+
       return this.findOne(_id);
     } catch (error) {
       baseException.HttpException(error);

@@ -1,13 +1,7 @@
 import { PartialType } from '@nestjs/mapped-types';
+import { ApiProperty, OmitType } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
-  AnswerDTO,
-  AnswerSystemDTO,
-  CreateQuestionDto,
-} from './create-question.dto';
-import { OmitType } from '@nestjs/swagger';
-import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsArray,
   IsEnum,
   IsNumber,
   IsOptional,
@@ -15,20 +9,20 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { QUESTION_TYPE_ENTITY } from 'src/core/constants';
-import { Type } from 'class-transformer';
+import { AnswerDTO, CreateQuestionDto } from './create-question.dto';
 
 export class UpdateQuestionMetaDTO {
   @ApiProperty({ example: '1', description: 'Id Question meta.' })
+  @IsOptional()
   @IsNumber()
-  id: number;
+  id?: number;
 
   @ApiProperty({
     example: [],
     description: 'The question.',
   })
-  @IsArray()
-  @IsString({ each: true })
-  question: [];
+  @IsString()
+  question: string;
 
   @ApiProperty({
     example: 'Meta image',
@@ -45,14 +39,6 @@ export class UpdateQuestionMetaDTO {
   @ValidateNested()
   @Type(() => AnswerDTO)
   answer_correct: AnswerDTO;
-
-  @ApiProperty({
-    example: {},
-    description: 'The answer system of the question meta.',
-  })
-  @ValidateNested()
-  @Type(() => AnswerSystemDTO)
-  answer_system: AnswerSystemDTO;
 }
 
 export class UpdateQuestionDto extends PartialType(
@@ -68,7 +54,11 @@ export class UpdateQuestionDto extends PartialType(
     description: 'The type of the question.',
   })
   @IsEnum(QUESTION_TYPE_ENTITY)
-  question_type: string;
+  question_type: number;
+
+  @ApiProperty({ example: 'Description', description: 'Question description' })
+  @IsString()
+  question_description: string;
 
   @ApiProperty({
     type: () => [UpdateQuestionMetaDTO],
@@ -76,18 +66,14 @@ export class UpdateQuestionDto extends PartialType(
     example: [
       {
         id: 1,
-        question: ['1', '2', '3', '[]', '5', '[]'],
+        question: '1 2 3 4 [] 5 [] 6',
         image_sup: 'Meta image',
         answer_correct: {
           answers: [
             { answer: '4', score: 1 },
             { answer: '6', score: 1 },
           ],
-          image_sup: 'Correct image',
-        },
-        answer_system: {
-          answers: ['7', '8'],
-          image_sup: 'System image',
+          image_sup: '',
         },
       },
     ],

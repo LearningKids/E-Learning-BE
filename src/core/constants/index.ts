@@ -26,8 +26,8 @@ export enum SUBJECT_ENTITY {
 }
 
 export enum QUESTION_TYPE_ENTITY {
-  compare = 'compare',
-  completion = 'completion',
+  completion = 1,
+  compare = 2,
 }
 export enum EXCERCISE_TYPE_ENTITY {
   test = 'Test',

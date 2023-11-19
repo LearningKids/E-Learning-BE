@@ -3,14 +3,14 @@ export interface ISelect {
   value: number;
 }
 export const IMAGESUP_TYPE: ISelect[] = [
-  { label: 'Other', value: 1 },
-  { label: 'Fruit', value: 2 },
-  { label: 'Animal', value: 3 },
+  { label: 'Khác', value: 1 },
+  { label: 'Quả', value: 2 },
+  { label: 'Động vật', value: 3 },
 ];
 
 export const QUESTION_TYPE: ISelect[] = [
-  { label: 'Compare', value: 1 },
-  { label: 'Completion', value: 2 },
+  { label: 'Completion', value: 1 },
+  { label: 'Compare', value: 2 },
 ];
 
 export const EXCERCISE_TYPE: ISelect[] = [

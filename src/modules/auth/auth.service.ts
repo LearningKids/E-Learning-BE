@@ -167,10 +167,9 @@ export class AuthService {
   //! get AccessToken When expried
   async getAccessToken(refreshToken: string) {
     try {
-      const decoded = this.jwtService.verify(refreshToken, {
+      const decoded = await this.jwtService.verify(refreshToken, {
         secret: process.env.refreshToken,
       });
-
       const checkRefreshToken = await this.refreshTokenMatchWithAccount(
         decoded.email,
         refreshToken,
@@ -205,14 +204,14 @@ export class AuthService {
   generateAccessToken(payload: IToken | any) {
     return this.jwtService.sign(payload, {
       secret: `${process.env.accessToken}`,
-      // expiresIn: `${process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME}s`,
+      expiresIn: `${process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME}s`,
     });
   }
   //! refreshToken
   generateRefreshToken(payload: IToken) {
     return this.jwtService.sign(payload, {
       secret: `${process.env.refreshToken}`,
-      // expiresIn: `${process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME}s`,
+      expiresIn: `${process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME}s`,
     });
   }
   // //! hash data

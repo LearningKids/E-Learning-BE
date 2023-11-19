@@ -27,7 +27,7 @@ import routes from 'src/routes/index.route';
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       secret: `${process.env.jwt_secret}`,
-      signOptions: { expiresIn: '3600s' },
+      signOptions: { expiresIn: '10000000s' },
     }),
     EmailModule,
   ],

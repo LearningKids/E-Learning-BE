@@ -15,14 +15,26 @@ export class Question extends BaseEntity {
   @Prop({
     required: true,
     enum: QUESTION_TYPE_ENTITY,
+    default: QUESTION_TYPE_ENTITY.completion,
   })
-  question_type: string;
+  question_type: number;
 
   @Prop({
     required: true,
     type: String,
   })
   question_name: string;
+
+  @Prop({
+    type: String,
+  })
+  question_description: string;
+  @Prop({
+    type: Number,
+    ref: 'Account',
+    required: true,
+  })
+  author: number;
 
   @Prop({
     type: [

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { QuestionMeta } from './entities/question_meta.entity';
 import { Model, PaginateModel } from 'mongoose';
@@ -51,7 +51,17 @@ export class QuestionMetaService {
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} questionMeta`;
+  async remove(_id: number) {
+    try {
+      const questionMetaDelete = await this.questionMetaModel
+        .findOneAndUpdate({ _id: _id }, { deleted_at: Date.now() })
+        .exec();
+      if (!questionMetaDelete) {
+        baseException.NotFound(_id);
+      }
+      return questionMetaDelete;
+    } catch (error) {
+      baseException.HttpException(error);
+    }
   }
 }

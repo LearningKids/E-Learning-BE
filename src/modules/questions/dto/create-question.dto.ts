@@ -20,22 +20,14 @@ export class AnswerDTO {
   @IsString()
   image_sup?: string;
 }
-export class AnswerSystemDTO {
-  @IsArray()
-  answers: [string];
 
-  @IsOptional()
-  @IsString()
-  image_sup?: string;
-}
 export class QuestionMetaDTO {
   @ApiProperty({
-    example: [],
+    example: '',
     description: 'The question.',
   })
-  @IsArray()
-  @IsString({ each: true })
-  question: [];
+  @IsString()
+  question: string;
 
   @ApiProperty({
     example: 'Meta image',
@@ -52,14 +44,6 @@ export class QuestionMetaDTO {
   @ValidateNested()
   @Type(() => AnswerDTO)
   answer_correct: AnswerDTO;
-
-  @ApiProperty({
-    example: {},
-    description: 'The answer system of the question meta.',
-  })
-  @ValidateNested()
-  @Type(() => AnswerSystemDTO)
-  answer_system: AnswerSystemDTO;
 }
 
 export class CreateQuestionDto {
@@ -69,29 +53,30 @@ export class CreateQuestionDto {
 
   @ApiProperty({
     enum: QUESTION_TYPE_ENTITY,
-    default: QUESTION_TYPE_ENTITY.compare,
+    default: QUESTION_TYPE_ENTITY.completion,
     description: 'The type of the question.',
+    example: QUESTION_TYPE_ENTITY.completion,
   })
   @IsEnum(QUESTION_TYPE_ENTITY)
-  question_type: string;
+  question_type: number;
+
+  @ApiProperty({ example: 'Description', description: 'Question description' })
+  @IsString()
+  question_description: string;
 
   @ApiProperty({
     type: () => [QuestionMetaDTO],
     default: [],
     example: [
       {
-        question: ['1', '2', '3', '[]', '5', '[]'],
+        question: '1 2 3 4 [] 5 [] 6',
         image_sup: 'Meta image',
         answer_correct: {
           answers: [
             { answer: '4', score: 1 },
             { answer: '6', score: 1 },
           ],
-          image_sup: 'Correct image',
-        },
-        answer_system: {
-          answers: ['7', '8'],
-          image_sup: 'System image',
+          image_sup: '',
         },
       },
     ],
