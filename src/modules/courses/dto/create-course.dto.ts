@@ -28,10 +28,10 @@ export class CreateCourseDto {
   @IsEnum(COURSE_TYPE_ENTITY)
   course_type: string;
 
-  @ApiProperty({ example: 10, description: 'Số lượng bài học' })
-  @IsNotEmpty()
-  @IsNumber()
-  number_lessons: number;
+  // @ApiProperty({ example: 10, description: 'Số lượng bài học' })
+  // @IsNotEmpty()
+  // @IsNumber()
+  // number_lessons: number;
 
   @ApiProperty({
     example: [2],

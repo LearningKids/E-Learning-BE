@@ -26,13 +26,13 @@ export class Lesson extends BaseEntity {
     enum: LESSON_TYPE_ENTITY,
     default: LESSON_TYPE_ENTITY.default_lesson,
   })
-  lesson_type: string;
+  lesson_type: number;
 
   @Prop({
     type: [
       {
         required: true,
-        type: String,
+        type: Number,
         enum: SUBJECT_ENTITY,
         default: [],
       },

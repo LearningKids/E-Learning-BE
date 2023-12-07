@@ -10,6 +10,7 @@ import {
   UseInterceptors,
   UploadedFile,
   Query,
+  Put,
 } from '@nestjs/common';
 import { ImagesupService } from './imagesup.service';
 import { CreateImagesupDto } from './dto/create-imagesup.dto';
@@ -45,7 +46,7 @@ export class ImagesupController {
     return this.imagesupService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(
     @Param('id') id: string,
     @Body() updateImagesupDto: UpdateImagesupDto,

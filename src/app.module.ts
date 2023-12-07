@@ -15,6 +15,7 @@ import { ExcercisesModule } from './modules/exercises/excercises.module';
 import { ClassModule } from './modules/class/class.module';
 import { TypeModule } from './modules/type/type.module';
 import { QuestionMetaModule } from './modules/question_meta/question_meta.module';
+import { ClassExerciseModule } from './modules/class-exercise/class-exercise.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -36,12 +37,13 @@ import { QuestionMetaModule } from './modules/question_meta/question_meta.module
     AuthModule,
     AccountsModule,
     LessonsModule,
-    CoursesModule,
-    ImagesupModule,
-    UploadModule,
     QuestionsModule,
     ExcercisesModule,
+    CoursesModule,
     ClassModule,
+    ClassExerciseModule,
+    ImagesupModule,
+    UploadModule,
     TypeModule,
     QuestionMetaModule,
   ],

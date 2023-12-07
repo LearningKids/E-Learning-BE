@@ -2,7 +2,13 @@ import { PartialType } from '@nestjs/mapped-types';
 import { CreateClassDto } from './create-class.dto';
 import { OmitType } from '@nestjs/swagger';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+} from 'class-validator';
 import { Types } from 'mongoose';
 import { CLASS_STATUS, CLASS_TYPES } from 'src/core/constants';
 
@@ -20,10 +26,10 @@ export class UpdateClassDto extends PartialType(
 
   @ApiProperty({
     description: 'Teacher id',
-    example: '64dc37daab1ccc67bd2e04b5',
+    example: 2,
   })
-  @IsString()
-  teacher: Types.ObjectId;
+  @IsNumber()
+  teacher: number;
 
   @ApiProperty({
     description: 'start date',
@@ -67,23 +73,16 @@ export class UpdateClassDto extends PartialType(
 
   @ApiProperty({
     description: 'List students join',
-    example: ['64dc37daab1ccc67bd2e04b6'],
+    example: [4],
   })
   @IsArray()
-  students: Types.ObjectId[];
+  students: number[];
 
   @ApiProperty({
     description: 'course id',
-    example: '',
+    example: 3,
   })
-  @IsString()
+  @IsNumber()
   @IsNotEmpty()
-  course: Types.ObjectId;
-
-  @ApiProperty({
-    description: 'list exercise id',
-    example: [],
-  })
-  @IsArray()
-  exercises: Types.ObjectId[];
+  course: number;
 }

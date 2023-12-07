@@ -14,6 +14,7 @@ const paginationQuery = (
   page = 1,
   page_size = 10,
   populate?: string[] | any,
+  find?: any,
 ) => {
   return {
     page: page,
@@ -21,6 +22,7 @@ const paginationQuery = (
     customLabels: myCustomLabels,
     populate,
     hasPrevPage: true,
+    options: find,
   };
 };
 

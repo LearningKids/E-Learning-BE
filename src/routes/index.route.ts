@@ -24,6 +24,8 @@ const routes = {
   exercise: 'exercise',
   //! class
   class: 'class',
+  //! class-exercise
+  classExercise: 'class-exercise',
 };
 
 export default routes;

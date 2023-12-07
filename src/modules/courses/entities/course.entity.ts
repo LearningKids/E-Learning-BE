@@ -8,6 +8,7 @@ import {
 } from '@typegoose/auto-increment';
 import { COURSE_TYPE_ENTITY } from 'src/core/constants';
 import { BadRequestException } from '@nestjs/common';
+import checkForDuplicateField from 'src/middlewares/checkDuplicate/checkDuplicate.middleware';
 
 @Schema({ versionKey: false, timestamps: true })
 export class Course extends BaseEntity {
@@ -35,11 +36,11 @@ export class Course extends BaseEntity {
   })
   course_type: string;
 
-  @Prop({
-    type: Number,
-    required: true,
-  })
-  number_lessons: number;
+  // @Prop({
+  //   type: Number,
+  //   required: true,
+  // })
+  // number_lessons: number;
 
   @Prop({
     type: [
@@ -55,22 +56,16 @@ export type CourseDocument = Course & Document;
 
 export const CourseSchema = SchemaFactory.createForClass(Course);
 
-CourseSchema.pre<CourseDocument>('save', async function () {
-  if (this.content_lesson.length !== this.number_lessons) {
-    throw new BadRequestException(
-      'Số lượng bài học không khớp với số lượng nội dung bài học',
-    );
-  }
-});
+// CourseSchema.pre<CourseDocument>('save', async function () {
+//   if (this.content_lesson.length !== this.number_lessons) {
+//     throw new BadRequestException(
+//       'Số lượng bài học không khớp với số lượng nội dung bài học',
+//     );
+//   }
+// });
 
-CourseSchema.post('save', function (error, doc, next) {
-  if (error?.code === 11000) {
-    const [fieldName, value] = Object.entries(error.keyValue)[0];
-    throw new BadRequestException(`Duplicate ${[fieldName]} : ${value}`);
-  } else {
-    next();
-  }
-});
+CourseSchema.post('save', checkForDuplicateField);
+CourseSchema.post('findOneAndUpdate', checkForDuplicateField);
 CourseSchema.plugin(AutoIncrementID, {
   field: '_id',
   startAt: 1,

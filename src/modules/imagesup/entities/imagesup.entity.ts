@@ -8,6 +8,7 @@ import {
 } from '@typegoose/auto-increment';
 import { IMAGESUP_TYPE } from 'src/core/constants';
 import { BadRequestException } from '@nestjs/common';
+import checkForDuplicateField from 'src/middlewares/checkDuplicate/checkDuplicate.middleware';
 
 @Schema({ versionKey: false, timestamps: true })
 export class Imagesup extends BaseEntity {
@@ -39,14 +40,9 @@ export class Imagesup extends BaseEntity {
 export type ImagesupDocument = HydratedDocument<Imagesup>;
 export const ImagesupSchema = SchemaFactory.createForClass(Imagesup);
 
-ImagesupSchema.post('save', function (error, doc, next) {
-  if (error.code === 11000) {
-    const [fieldName, value] = Object.entries(error.keyValue)[0];
-    throw new BadRequestException(`Duplicate ${[fieldName]} : ${value}`);
-  } else {
-    next();
-  }
-});
+ImagesupSchema.post('save', checkForDuplicateField);
+ImagesupSchema.post('findOneAndUpdate', checkForDuplicateField);
+
 ImagesupSchema.plugin(AutoIncrementID, {
   field: '_id',
   startAt: 1,

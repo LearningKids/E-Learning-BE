@@ -1,13 +1,12 @@
-import { Types } from 'mongoose';
+import { ApiProperty } from '@nestjs/swagger';
 import {
-  IsNotEmpty,
-  IsString,
   ArrayNotEmpty,
   IsEnum,
+  IsNotEmpty,
   IsNumber,
+  IsString,
 } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
-import { EXCERCISE_TYPE_ENTITY } from 'src/core/constants';
+import { EXCERCISE_TYPE_ENTITY, SUBJECT_ENTITY } from 'src/core/constants';
 
 export class CreateExcerciseDto {
   @ApiProperty({
@@ -19,20 +18,13 @@ export class CreateExcerciseDto {
   exercise_name: string;
 
   @ApiProperty({
-    example: EXCERCISE_TYPE_ENTITY.trial_learning,
+    example: SUBJECT_ENTITY.Math,
     description: 'exercise type',
-    enum: EXCERCISE_TYPE_ENTITY,
+    enum: SUBJECT_ENTITY,
   })
   @IsNotEmpty()
-  @IsEnum(EXCERCISE_TYPE_ENTITY)
-  excercise_type: string;
-
-  @ApiProperty({
-    description: 'Author created',
-    example: 1,
-  })
-  @IsNumber()
-  author: number;
+  @IsEnum(SUBJECT_ENTITY)
+  excercise_subject: number;
 
   @ApiProperty({
     description: 'List question',

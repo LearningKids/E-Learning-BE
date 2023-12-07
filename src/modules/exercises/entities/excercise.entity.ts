@@ -6,8 +6,9 @@ import {
   AutoIncrementID,
   AutoIncrementIDOptions,
 } from '@typegoose/auto-increment';
-import { EXCERCISE_TYPE_ENTITY } from 'src/core/constants';
+import { EXCERCISE_TYPE_ENTITY, SUBJECT_ENTITY } from 'src/core/constants';
 import { BadRequestException } from '@nestjs/common';
+import checkForDuplicateField from 'src/middlewares/checkDuplicate/checkDuplicate.middleware';
 
 @Schema({ versionKey: false, timestamps: true })
 export class Exercise extends BaseEntity {
@@ -23,10 +24,10 @@ export class Exercise extends BaseEntity {
 
   @Prop({
     required: true,
-    enum: EXCERCISE_TYPE_ENTITY,
-    default: EXCERCISE_TYPE_ENTITY.trial_learning,
+    enum: SUBJECT_ENTITY,
+    default: SUBJECT_ENTITY.Math,
   })
-  excercise_type: string;
+  excercise_subject: number;
 
   @Prop({
     type: Number,
@@ -47,14 +48,8 @@ export class Exercise extends BaseEntity {
 export type ExcerciseDocument = Exercise & Document;
 export const ExcerciseSchema = SchemaFactory.createForClass(Exercise);
 
-ExcerciseSchema.post('save', function (error, doc, next) {
-  if (error.code === 11000) {
-    const [fieldName, value] = Object.entries(error.keyValue)[0];
-    throw new BadRequestException(`Duplicate ${[fieldName]} : ${value}`);
-  } else {
-    next();
-  }
-});
+ExcerciseSchema.post('save', checkForDuplicateField);
+ExcerciseSchema.post('findOneAndUpdate', checkForDuplicateField);
 ExcerciseSchema.plugin(AutoIncrementID, {
   field: '_id',
   startAt: 1,

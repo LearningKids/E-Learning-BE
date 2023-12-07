@@ -12,4 +12,12 @@ export class FilterExerciseDto extends PaginationDto {
     required: false,
   })
   exercise_name: string;
+
+  @IsOptional()
+  @ApiProperty({
+    type: Boolean,
+    required: false,
+    name: 'personal',
+  })
+  personal: boolean;
 }

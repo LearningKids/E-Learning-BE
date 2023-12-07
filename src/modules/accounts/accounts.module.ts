@@ -37,7 +37,7 @@ import mongoose from 'mongoose';
   ],
   controllers: [AccountsController],
   providers: [AccountsService],
-  exports: [AccountsModule],
+  exports: [AccountsModule, AccountsService],
 })
 export class AccountsModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

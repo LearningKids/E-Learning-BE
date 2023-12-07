@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsOptional, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
 import { PaginationDto } from 'src/pagination/dto/index.dto';
 export class FilterQuestiontDto extends PaginationDto {
@@ -12,4 +12,12 @@ export class FilterQuestiontDto extends PaginationDto {
     name: 'question_name',
   })
   question_name: string;
+
+  @IsOptional()
+  @ApiProperty({
+    type: Boolean,
+    required: false,
+    name: 'personal',
+  })
+  personal: boolean;
 }

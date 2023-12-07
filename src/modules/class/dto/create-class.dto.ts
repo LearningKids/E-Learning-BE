@@ -1,6 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsDate, IsEnum, IsNotEmpty, IsString } from 'class-validator';
-import { Types } from 'mongoose';
+import {
+  IsArray,
+  IsDate,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+} from 'class-validator';
+import { NumberSchemaDefinition, Types } from 'mongoose';
 import { CLASS_STATUS, CLASS_TYPES } from 'src/core/constants';
 
 export class CreateClassDto {
@@ -15,10 +22,10 @@ export class CreateClassDto {
 
   @ApiProperty({
     description: 'Teacher id',
-    example: '64dc37daab1ccc67bd2e04b5',
+    example: 2,
   })
-  @IsString()
-  teacher: Types.ObjectId;
+  @IsNumber()
+  teacher: number;
 
   @ApiProperty({
     description: 'start date',
@@ -54,7 +61,7 @@ export class CreateClassDto {
 
   @ApiProperty({
     description: 'Room learn',
-    example: 'Meta author',
+    example: 'Room 1',
   })
   @IsNotEmpty()
   @IsString()
@@ -62,23 +69,16 @@ export class CreateClassDto {
 
   @ApiProperty({
     description: 'List students join',
-    example: ['64dc37daab1ccc67bd2e04b6'],
+    example: [4],
   })
   @IsArray()
-  students: Types.ObjectId[];
+  students: number[];
 
   @ApiProperty({
     description: 'course id',
-    example: '',
+    example: 1,
   })
-  @IsString()
+  @IsNumber()
   @IsNotEmpty()
-  course: Types.ObjectId;
-
-  @ApiProperty({
-    description: 'list exercise id',
-    example: [],
-  })
-  @IsArray()
-  exercises: Types.ObjectId[];
+  course: number;
 }

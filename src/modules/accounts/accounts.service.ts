@@ -49,7 +49,7 @@ export class AccountsService {
         this.accountModel,
       );
       if (!account) {
-        baseException.NotFound(_id);
+        baseException.NotFound(`student ${_id}`);
       }
       return account;
     } catch (error) {

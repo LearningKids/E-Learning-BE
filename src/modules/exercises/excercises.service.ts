@@ -1,21 +1,15 @@
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
-import { CreateExcerciseDto } from './dto/create-excercise.dto';
-import { UpdateExcerciseDto } from './dto/update-excercise.dto';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Exercise } from './entities/excercise.entity';
 import { PaginateModel } from 'mongoose';
-import { FilterExerciseDto } from './dto/filter-exercise.dto';
+import baseException from 'src/helpers/baseException';
+import methodBase from 'src/helpers/methodBase';
 import paginationQuery from 'src/pagination';
 import queryFilters from 'src/pagination/filters';
 import { QuestionsService } from '../questions/questions.service';
-import baseException from 'src/helpers/baseException';
-import methodBase from 'src/helpers/methodBase';
+import { CreateExcerciseDto } from './dto/create-excercise.dto';
+import { FilterExerciseDto } from './dto/filter-exercise.dto';
+import { UpdateExcerciseDto } from './dto/update-excercise.dto';
+import { Exercise } from './entities/excercise.entity';
 
 @Injectable()
 export class ExcercisesService {
@@ -37,7 +31,7 @@ export class ExcercisesService {
     }
   }
 
-  async findAll(pagination: FilterExerciseDto) {
+  async findAll(pagination: FilterExerciseDto, authorID: number) {
     try {
       const options = paginationQuery(pagination.page, pagination.page_size, [
         { path: 'author', select: '-deleted_at -createdAt -updatedAt' },
@@ -45,15 +39,17 @@ export class ExcercisesService {
           path: 'questions',
           select: '-deleted_at -createdAt -updatedAt',
         },
-        {
-          path: 'questions',
-          populate: {
-            path: 'question_meta',
-            select: '-deleted_at -createdAt -updatedAt',
-          },
-        },
       ]);
-      const filters = queryFilters(pagination);
+      let data = {};
+      let filters = {};
+      if (String(pagination.personal) === 'true') {
+        delete pagination.personal;
+        data = { ...pagination, author: Number(authorID) };
+        filters = queryFilters(data);
+      } else {
+        delete pagination.personal;
+        filters = queryFilters(pagination);
+      }
       const exercises = await this.exerciseModel.paginate(filters, options);
       return exercises;
     } catch (error) {
@@ -68,6 +64,10 @@ export class ExcercisesService {
         {
           path: 'questions',
           select: '-deleted_at -createdAt -updatedAt',
+          populate: {
+            path: 'author',
+            select: '-deleted_at -createdAt -updatedAt',
+          },
         },
         {
           path: 'questions',

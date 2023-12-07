@@ -8,8 +8,8 @@ export const roleNames = {
 };
 
 export enum LESSON_TYPE_ENTITY {
-  default_lesson = 'Default_lesson', //!  lesson default belongsTo course
-  created_lesson = 'Create_lesson', //! lesson created by admin or teacher
+  default_lesson = 1, //!  lesson default belongsTo course
+  created_lesson = 2, //! lesson created by admin or teacher
 }
 export enum IMAGESUP_TYPE {
   other = 1,
@@ -17,12 +17,12 @@ export enum IMAGESUP_TYPE {
   animal = 3,
 }
 export enum COURSE_TYPE_ENTITY {
-  trial = 'Trial',
-  charged = 'Charged',
+  trial = 1,
+  charged = 2,
 }
 export enum SUBJECT_ENTITY {
-  Math = 'Math',
-  English = 'English',
+  Math = 1,
+  English = 2,
 }
 
 export enum QUESTION_TYPE_ENTITY {
@@ -30,18 +30,18 @@ export enum QUESTION_TYPE_ENTITY {
   compare = 2,
 }
 export enum EXCERCISE_TYPE_ENTITY {
-  test = 'Test',
-  homework = 'Homework',
-  trial_learning = 'Trial',
+  test = 1,
+  homework = 2,
+  trial_learning = 3,
 }
 
 export enum CLASS_STATUS {
-  prepare = 'PREPARE',
-  running = 'RUNNING',
-  finished = 'FINISHED',
+  prepare = 1,
+  running = 2,
+  finished = 3,
 }
 
 export enum CLASS_TYPES {
-  online = 'ONLINE',
-  offline = 'OFFLINE',
+  online = 1,
+  offline = 2,
 }

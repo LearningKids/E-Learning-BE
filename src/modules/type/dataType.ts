@@ -14,25 +14,36 @@ export const QUESTION_TYPE: ISelect[] = [
 ];
 
 export const EXCERCISE_TYPE: ISelect[] = [
-  { label: 'Test', value: 1 },
-  { label: 'HomeWork', value: 2 },
-  { label: 'Trial', value: 3 },
+  { label: 'Bài thi', value: 1 },
+  { label: 'Bài tập về nhà', value: 2 },
+  { label: 'Học thử', value: 3 },
 ];
 
 export const SUBJECT: ISelect[] = [
-  { label: 'Math', value: 1 },
-  { label: 'English', value: 2 },
+  { label: 'Toán', value: 1 },
+  { label: 'Tiếng anh', value: 2 },
 ];
 
 export const LESSON_TYPE: ISelect[] = [
-  { label: 'Default_lesson', value: 1 },
+  { label: 'Mặc định', value: 1 },
   {
-    label: 'Create_lesson',
+    label: 'Trả phí',
     value: 2,
   },
 ];
 
 export const COURSE_TYPE: ISelect[] = [
   { label: 'Trial', value: 1 },
-  { label: 'Charged', value: 2 },
+  { label: 'Trả phí', value: 2 },
+];
+
+export const CLASS_STATUS: ISelect[] = [
+  { label: 'Sắp khải giảng', value: 1 },
+  { label: 'Đang học', value: 2 },
+  { label: 'Kết thúc', value: 3 },
+];
+
+export const CLASS_TYPE: ISelect[] = [
+  { label: 'Online', value: 1 },
+  { label: 'Offline', value: 2 },
 ];

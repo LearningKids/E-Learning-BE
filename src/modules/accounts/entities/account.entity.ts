@@ -8,6 +8,7 @@ import {
   AutoIncrementIDOptions,
 } from '@typegoose/auto-increment';
 import { BadRequestException } from '@nestjs/common';
+import checkForDuplicateField from 'src/middlewares/checkDuplicate/checkDuplicate.middleware';
 export enum GENDER {
   Male = 1,
   Female = 2,
@@ -76,15 +77,8 @@ export type AccountDocument = HydratedDocument<Account>;
 
 export const AccountSchema = SchemaFactory.createForClass(Account);
 
-AccountSchema.post('save', function (error, doc, next) {
-  if (error.code === 11000) {
-    const [fieldName, value] = Object.entries(error.keyValue)[0];
-    const errorMessage = `Duplicate ${[fieldName]}`;
-    next(new BadRequestException(errorMessage));
-  } else {
-    next();
-  }
-});
+AccountSchema.post('save', checkForDuplicateField);
+AccountSchema.post('findOneAndUpdate', checkForDuplicateField);
 
 AccountSchema.plugin(AutoIncrementID, {
   field: '_id',

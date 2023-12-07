@@ -7,6 +7,9 @@ import {
   getConnectionToken,
 } from '@nestjs/mongoose';
 import { Class, ClassSchema } from './entities/class.entity';
+import { AccountsModule } from '../accounts/accounts.module';
+import mongoose from 'mongoose';
+import { CoursesModule } from '../courses/courses.module';
 
 @Module({
   imports: [
@@ -14,12 +17,16 @@ import { Class, ClassSchema } from './entities/class.entity';
       {
         name: Class.name,
         inject: [getConnectionToken()],
-        useFactory: (): ModelDefinition['schema'] => {
+        useFactory: (
+          connection: mongoose.Connection,
+        ): ModelDefinition['schema'] => {
           const schema = ClassSchema;
           return schema;
         },
       },
     ]),
+    AccountsModule,
+    CoursesModule,
   ],
   controllers: [ClassController],
   providers: [ClassService],

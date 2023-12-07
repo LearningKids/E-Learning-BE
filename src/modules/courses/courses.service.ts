@@ -1,10 +1,4 @@
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -114,6 +108,7 @@ export class CoursesService {
       if (!courseUpdate) {
         baseException.NotFound(`course id ${_id}`);
       }
+      return courseUpdate;
     } catch (error) {
       baseException.HttpException(error);
     }

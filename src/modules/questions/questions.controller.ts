@@ -9,6 +9,7 @@ import {
   UseGuards,
   Query,
   Req,
+  Put,
 } from '@nestjs/common';
 import { QuestionsService } from './questions.service';
 import { CreateQuestionDto } from './dto/create-question.dto';
@@ -37,8 +38,9 @@ export class QuestionsController {
   }
 
   @Get()
-  findAll(@Query() filter: FilterQuestiontDto) {
-    return this.questionsService.findAll(filter);
+  findAll(@Query() filter: FilterQuestiontDto, @Req() request: any) {
+    const { id } = request.user?.account;
+    return this.questionsService.findAll(filter, id);
   }
 
   @Get(':id')
@@ -47,7 +49,7 @@ export class QuestionsController {
     return this.questionsService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(
     @Param('id') id: string,
     @Body() updateQuestionDto: UpdateQuestionDto,

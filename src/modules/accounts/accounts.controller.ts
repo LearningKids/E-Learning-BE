@@ -74,7 +74,7 @@ export class AccountsController {
     return this.accountsService.findOne(id);
   }
   //! update
-  @Patch(':id')
+  @Put(':id')
   @ApiBody({
     type: CreateAccountDto,
     examples: {

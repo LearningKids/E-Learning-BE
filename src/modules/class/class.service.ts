@@ -1,32 +1,37 @@
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
-import { CreateClassDto } from './dto/create-class.dto';
-import { UpdateClassDto } from './dto/update-class.dto';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Class } from './entities/class.entity';
 import { PaginateModel } from 'mongoose';
-import { FilterClassDto } from './dto/filter-class.dto';
+import baseException from 'src/helpers/baseException';
+import methodBase from 'src/helpers/methodBase';
 import paginationQuery from 'src/pagination';
 import queryFilters from 'src/pagination/filters';
+import { AccountsService } from '../accounts/accounts.service';
+import { CoursesService } from '../courses/courses.service';
+import { CreateClassDto } from './dto/create-class.dto';
+import { FilterClassDto } from './dto/filter-class.dto';
+import { UpdateClassDto } from './dto/update-class.dto';
+import { Class } from './entities/class.entity';
 
 @Injectable()
 export class ClassService {
   constructor(
     @InjectModel(Class.name)
     private readonly classModel: PaginateModel<Class>,
+    private accountService: AccountsService,
+    private courseService: CoursesService,
   ) {}
 
-  create(createClassDto: CreateClassDto) {
+  async create(createClassDto: CreateClassDto) {
     try {
+      for (const student of createClassDto.students) {
+        await this.accountService.findOne(student);
+      }
+      await this.accountService.findOne(createClassDto.teacher);
+      await this.courseService.findOne(createClassDto.course);
       const createClass = new this.classModel(createClassDto);
       return createClass.save();
     } catch (error) {
-      throw new InternalServerErrorException('Server Error');
+      baseException.HttpException(error);
     }
   }
 
@@ -45,10 +50,6 @@ export class ClassService {
         path: 'course',
         select: '-deleted_at -createdAt -updatedAt',
       },
-      {
-        path: 'exercises',
-        select: '-deleted_at -createdAt -updatedAt',
-      },
     ]);
     const filters = queryFilters(pagination);
     const listClass = await this.classModel.paginate(filters, options);
@@ -58,59 +59,68 @@ export class ClassService {
   //! detail
   async findOne(_id: number) {
     try {
-      const course = await this.classModel
-        .findById({ _id })
-        .populate([
-          {
-            path: 'teacher',
-            select: '-deleted_at -createdAt -updatedAt',
-          },
-          {
-            path: 'students',
-            select: '-deleted_at -createdAt -updatedAt',
-          },
-          {
-            path: 'course',
-            select: '-deleted_at -createdAt -updatedAt',
-          },
-          {
-            path: 'exercises',
-            select: '-deleted_at -createdAt -updatedAt',
-          },
-        ])
-        .exec();
+      const options = [
+        {
+          path: 'teacher',
+          select: '-deleted_at -createdAt -updatedAt',
+        },
+        {
+          path: 'students',
+          select: '-deleted_at -createdAt -updatedAt',
+        },
+        {
+          path: 'course',
+          select: '-deleted_at -createdAt -updatedAt',
+        },
+      ];
+      const course = await methodBase.findOneByCondition(
+        { _id },
+        this.classModel,
+        options,
+      );
+      if (!course) {
+        baseException.NotFound(`course id ${_id}`);
+      }
       return {
         data: course,
         status: 200,
       };
     } catch (error) {
-      throw new InternalServerErrorException('Server Error');
+      baseException.HttpException(error);
     }
   }
 
   async update(_id: number, updateClassDto: UpdateClassDto) {
     try {
-      const clas = await this.classModel.findById({ _id }).exec();
-      if (!clas) {
-        throw new NotFoundException(`${_id} not Found`);
+      for (const student of updateClassDto.students) {
+        await this.accountService.findOne(student);
       }
-      const classUpdate = await this.classModel
-        .findOneAndUpdate({ _id: _id }, updateClassDto, { new: true })
-        .exec();
-      return classUpdate;
+      await this.accountService.findOne(updateClassDto.teacher);
+      await this.courseService.findOne(updateClassDto.course);
+      const exerciseUpdate = await methodBase.findOneUpdate(
+        { _id },
+        this.classModel,
+        updateClassDto,
+      );
+      if (!exerciseUpdate) {
+        baseException.NotFound(`exercise id ${_id}`);
+      }
+      return exerciseUpdate;
     } catch (error) {
-      throw new HttpException(`Error`, HttpStatus.INTERNAL_SERVER_ERROR);
+      console.log(error);
+      baseException.HttpException(error);
     }
   }
 
   async remove(_id: number) {
-    const classRemove = await this.classModel.findById({ _id }).exec();
-    if (!classRemove) {
-      throw new NotFoundException(`${_id} not Found`);
+    try {
+      const classRemove = await methodBase.remove({ _id }, this.classModel);
+      if (!classRemove) {
+        baseException.NotFound(`class id ${_id}`);
+      }
+      throw new HttpException('Delete sucess', HttpStatus.OK);
+    } catch (error) {
+      baseException.HttpException(error);
     }
-    await this.classModel
-      .findOneAndUpdate({ _id: _id }, { deleted_at: Date.now() })
-      .exec();
-    throw new HttpException('Delete sucess', HttpStatus.OK);
   }
 }

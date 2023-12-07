@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Query,
+  Put,
 } from '@nestjs/common';
 import { LessonsService } from './lessons.service';
 import { CreateLessonDto } from './dto/create-lesson.dto';
@@ -45,7 +46,7 @@ export class LessonsController {
     return this.lessonsService.findOne(id);
   }
   //! update
-  @Patch(':id')
+  @Put(':id')
   update(@Param('id') id: number, @Body() updateLessonDto: UpdateLessonDto) {
     return this.lessonsService.update(id, updateLessonDto);
   }

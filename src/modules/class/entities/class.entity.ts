@@ -8,6 +8,7 @@ import {
 } from '@typegoose/auto-increment';
 import { CLASS_STATUS, CLASS_TYPES } from 'src/core/constants';
 import { BadRequestException } from '@nestjs/common';
+import checkForDuplicateField from 'src/middlewares/checkDuplicate/checkDuplicate.middleware';
 
 @Schema({ versionKey: false, timestamps: true })
 export class Class extends BaseEntity {
@@ -28,10 +29,11 @@ export class Class extends BaseEntity {
   class_image: string;
 
   @Prop({
-    type: Types.ObjectId,
+    type: Number,
     ref: 'Account',
+    required: true,
   })
-  teacher: Types.ObjectId;
+  teacher: number;
 
   @Prop({
     type: Date,
@@ -69,43 +71,26 @@ export class Class extends BaseEntity {
   @Prop({
     type: [
       {
-        type: Types.ObjectId,
+        type: Number,
         ref: 'Account',
       },
     ],
   })
-  students: Types.ObjectId[];
+  students: number[];
 
   @Prop({
-    type: Types.ObjectId,
+    type: Number,
     ref: 'Course',
     required: true,
   })
-  course: Types.ObjectId;
-
-  @Prop({
-    type: [
-      {
-        type: Types.ObjectId,
-        ref: 'Exercise',
-      },
-    ],
-  })
-  exercises: Types.ObjectId[];
+  course: number;
 }
 
 export type ClassDocument = Class & Document;
 export const ClassSchema = SchemaFactory.createForClass(Class);
 
-ClassSchema.post('save', function (error, doc, next) {
-  console.log(error);
-  if (error.code === 11000) {
-    const [fieldName, value] = Object.entries(error.keyValue)[0];
-    throw new BadRequestException(`Duplicate ${[fieldName]} : ${value}`);
-  } else {
-    next();
-  }
-});
+ClassSchema.post('save', checkForDuplicateField);
+ClassSchema.post('findOneAndUpdate', checkForDuplicateField);
 
 ClassSchema.plugin(AutoIncrementID, {
   field: '_id',

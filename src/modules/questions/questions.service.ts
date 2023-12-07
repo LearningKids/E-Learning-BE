@@ -38,12 +38,22 @@ export class QuestionsService {
     return createQuestion.save();
   }
 
-  async findAll(pagination: FilterQuestiontDto) {
+  async findAll(pagination: FilterQuestiontDto, authorID: number) {
     const options = paginationQuery(pagination.page, pagination.page_size, [
       'question_meta',
       'author',
     ]);
-    const filters = queryFilters(pagination);
+    let data = {};
+    let filters = {};
+    console.log(pagination);
+    if (String(pagination?.personal) === 'true') {
+      delete pagination.personal;
+      data = { ...pagination, author: Number(authorID) };
+      filters = queryFilters(data);
+    } else {
+      delete pagination.personal;
+      filters = queryFilters(pagination);
+    }
     const questions = await this.questionModel.paginate(filters, options);
     return questions;
   }
