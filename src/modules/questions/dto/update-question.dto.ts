@@ -8,7 +8,7 @@ import {
   IsString,
   ValidateNested,
 } from 'class-validator';
-import { QUESTION_TYPE_ENTITY } from 'src/core/constants';
+import { QUESTION_TYPE_ENTITY, SUBJECT_ENTITY } from 'src/core/constants';
 import { AnswerDTO, CreateQuestionDto } from './create-question.dto';
 
 export class UpdateQuestionMetaDTO {
@@ -47,6 +47,15 @@ export class UpdateQuestionDto extends PartialType(
   @ApiProperty({ example: 'So sanh', description: 'The name of the question.' })
   @IsString()
   question_name: string;
+
+  @ApiProperty({
+    enum: SUBJECT_ENTITY,
+    default: SUBJECT_ENTITY.Math,
+    description: 'The type of the question.',
+    example: SUBJECT_ENTITY.Math,
+  })
+  @IsEnum(SUBJECT_ENTITY)
+  subject: number;
 
   @ApiProperty({
     enum: QUESTION_TYPE_ENTITY,

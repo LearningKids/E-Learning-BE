@@ -22,13 +22,9 @@ export class QuestionMeta extends BaseEntity {
         {
           answer: String,
           score: Number,
+          image_sup: String,
         },
       ],
-      image_sup: {
-        type: String,
-        required: false,
-        default: null,
-      },
     },
   })
   answer_correct: {

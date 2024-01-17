@@ -26,6 +26,15 @@ const routes = {
   class: 'class',
   //! class-exercise
   classExercise: 'class-exercise',
+  //! class-student
+  classStudent: 'class-member',
+  //! schedule
+  schedule: 'schedule',
+  //! exercise-student
+  exercise_student: 'exercise-student',
+
+  //! score
+  score: 'score',
 };
 
 export default routes;

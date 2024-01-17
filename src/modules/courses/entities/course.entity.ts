@@ -7,7 +7,6 @@ import {
   AutoIncrementIDOptions,
 } from '@typegoose/auto-increment';
 import { COURSE_TYPE_ENTITY } from 'src/core/constants';
-import { BadRequestException } from '@nestjs/common';
 import checkForDuplicateField from 'src/middlewares/checkDuplicate/checkDuplicate.middleware';
 
 @Schema({ versionKey: false, timestamps: true })
@@ -29,12 +28,12 @@ export class Course extends BaseEntity {
   })
   course_description: string;
 
-  @Prop({
-    required: true,
-    enum: COURSE_TYPE_ENTITY,
-    default: COURSE_TYPE_ENTITY.charged,
-  })
-  course_type: string;
+  // @Prop({
+  //   required: true,
+  //   enum: COURSE_TYPE_ENTITY,
+  //   default: COURSE_TYPE_ENTITY.charged,
+  // })
+  // course_type: string;
 
   // @Prop({
   //   type: Number,

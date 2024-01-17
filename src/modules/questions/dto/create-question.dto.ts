@@ -7,7 +7,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { QUESTION_TYPE_ENTITY } from 'src/core/constants';
+import { QUESTION_TYPE_ENTITY, SUBJECT_ENTITY } from 'src/core/constants';
 
 export class AnswerDTO {
   @IsArray()
@@ -50,6 +50,15 @@ export class CreateQuestionDto {
   @ApiProperty({ example: 'So sanh', description: 'The name of the question.' })
   @IsString()
   question_name: string;
+
+  @ApiProperty({
+    enum: SUBJECT_ENTITY,
+    default: SUBJECT_ENTITY.Math,
+    description: 'The type of the question.',
+    example: SUBJECT_ENTITY.Math,
+  })
+  @IsEnum(SUBJECT_ENTITY)
+  subject: number;
 
   @ApiProperty({
     enum: QUESTION_TYPE_ENTITY,

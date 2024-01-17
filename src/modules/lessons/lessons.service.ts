@@ -27,9 +27,9 @@ export class LessonsService {
   //!create
   async create(createLessonDto: CreateLessonDto): Promise<Lesson> {
     try {
-      for (const idExercise of createLessonDto.exercises) {
-        await this.exerciseService.findOne(idExercise);
-      }
+      // for (const idExercise of createLessonDto.exercises) {
+      //   await this.exerciseService.findOne(idExercise);
+      // }
       const createLesson = new this.lessonModel(createLessonDto);
       return createLesson.save();
     } catch (error) {
@@ -38,20 +38,7 @@ export class LessonsService {
   }
   //! all
   async findAll(pagination: FilterLessontDto) {
-    const options = paginationQuery(pagination.page, pagination.page_size, [
-      {
-        path: 'exercises',
-        select: '-deleted_at -createdAt -updatedAt',
-        populate: {
-          path: 'questions',
-          select: '-deleted_at -createdAt -updatedAt',
-          populate: {
-            path: 'question_meta',
-            select: '-deleted_at -createdAt -updatedAt',
-          },
-        },
-      },
-    ]);
+    const options = paginationQuery(pagination.page, pagination.page_size, []);
     const filters = queryFilters(pagination);
     const lessons = await this.lessonModel.paginate(filters, options);
     return lessons;
@@ -59,20 +46,7 @@ export class LessonsService {
   //! detail
   async findOne(_id: number) {
     try {
-      const options = [
-        {
-          path: 'exercises',
-          select: '-deleted_at -createdAt -updatedAt',
-          populate: {
-            path: 'questions',
-            select: '-deleted_at -createdAt -updatedAt',
-            populate: {
-              path: 'question_meta',
-              select: '-deleted_at -createdAt -updatedAt',
-            },
-          },
-        },
-      ];
+      const options = [];
       const lesson = await methodBase.findOneByCondition(
         { _id },
         this.lessonModel,
@@ -89,9 +63,9 @@ export class LessonsService {
   //! update
   async update(_id: number, updateLessonDto: UpdateLessonDto): Promise<Lesson> {
     try {
-      for (const idExercise of updateLessonDto.exercises) {
-        await this.exerciseService.findOne(idExercise);
-      }
+      // for (const idExercise of updateLessonDto.exercises) {
+      //   await this.exerciseService.findOne(idExercise);
+      // }
       const lessonUpdate = await methodBase.findOneUpdate(
         { _id },
         this.lessonModel,

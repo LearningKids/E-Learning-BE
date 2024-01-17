@@ -10,7 +10,7 @@ export class TypeController {
 
   @Get()
   findAll(@Query() getType: GetTypeDto) {
-    const { type } = getType;
-    return this.typeService.findAll(type);
+    const { type, subject } = getType;
+    return this.typeService.findAll(type, subject);
   }
 }

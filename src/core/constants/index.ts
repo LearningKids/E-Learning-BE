@@ -28,6 +28,14 @@ export enum SUBJECT_ENTITY {
 export enum QUESTION_TYPE_ENTITY {
   completion = 1,
   compare = 2,
+  calculate = 3,
+  numeration = 4,
+  word_math = 5,
+  t_f_ng = 6,
+  matching = 7,
+  sentence_completion = 8,
+  word_arrangement = 9,
+  one_choice = 10,
 }
 export enum EXCERCISE_TYPE_ENTITY {
   test = 1,
@@ -44,4 +52,20 @@ export enum CLASS_STATUS {
 export enum CLASS_TYPES {
   online = 1,
   offline = 2,
+}
+
+export const DayofWeek = [
+  { label: 'Chủ Nhật', value: '0' },
+  { label: 'Thứ Hai', value: '1' },
+  { label: 'Thứ Ba', value: '2' },
+  { label: 'Thứ Tư', value: '3' },
+  { label: 'Thứ Năm', value: '4' },
+  { label: 'Thứ Sáu', value: '5' },
+  { label: 'Thứ Bảy', value: '6' },
+];
+
+export enum status_exercise_student {
+  unfinished = 1,
+  done = 2,
+  cando = 3,
 }

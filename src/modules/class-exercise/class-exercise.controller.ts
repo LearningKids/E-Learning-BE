@@ -7,6 +7,9 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
+  Put,
+  Req,
 } from '@nestjs/common';
 import { ClassExerciseService } from './class-exercise.service';
 import { CreateClassExerciseDto } from './dto/create-class-exercise.dto';
@@ -16,6 +19,8 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Roles, accessRole } from 'src/decorators/roles.decorators';
 import { RolesGuard } from '../auth/guards/role.guard';
 import { JwtAccessTokenGuard } from '../auth/guards/jwt.guard';
+import { FilterExerciseClassDto } from './dto/filter-exercise-class-dto';
+import { BlockExerciseClassDto } from './dto/block-class-exercise.dto';
 
 @Controller(routes.classExercise)
 @ApiTags(routes.classExercise)
@@ -26,22 +31,33 @@ import { JwtAccessTokenGuard } from '../auth/guards/jwt.guard';
 export class ClassExerciseController {
   constructor(private readonly classExerciseService: ClassExerciseService) {}
 
-  @Post()
-  create(@Body() createClassExerciseDto: CreateClassExerciseDto) {
-    return this.classExerciseService.create(createClassExerciseDto);
+  @Post(':idClass')
+  create(
+    @Param('idClass') idClass: string,
+    @Body() createClassExerciseDto: CreateClassExerciseDto,
+  ) {
+    return this.classExerciseService.create(+idClass, createClassExerciseDto);
   }
 
-  @Get()
-  findAll() {
-    return this.classExerciseService.findAll();
+  @Get(':idClass')
+  findAll(
+    @Param('idClass') idClass: string,
+    @Req() request: any,
+    @Query() filter: FilterExerciseClassDto,
+  ) {
+    const account = request.user.account;
+    return this.classExerciseService.findAll(+idClass, filter, account);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.classExerciseService.findOne(+id);
+  @Get(':idClass/:idExerciseClass')
+  findOne(
+    @Param('idClass') idClass: string,
+    @Param('idExerciseClass') idExerciseClass: string,
+  ) {
+    return this.classExerciseService.findOne(+idClass, +idExerciseClass);
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(
     @Param('id') id: string,
     @Body() updateClassExerciseDto: UpdateClassExerciseDto,
@@ -52,5 +68,13 @@ export class ClassExerciseController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.classExerciseService.remove(+id);
+  }
+
+  @Put('block/:id')
+  blockExerciseClass(
+    @Param('id') id: string,
+    @Query() block: BlockExerciseClassDto,
+  ) {
+    return this.classExerciseService.block(+id, block);
   }
 }

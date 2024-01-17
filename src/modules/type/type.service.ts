@@ -6,6 +6,8 @@ import {
   SUBJECT,
   LESSON_TYPE,
   COURSE_TYPE,
+  CLASS_TYPE,
+  CLASS_STATUS,
 } from './dataType';
 import { Types } from './type.dto';
 
@@ -17,25 +19,35 @@ export class TypeService {
   private Subject = SUBJECT;
   private LessonType = LESSON_TYPE;
   private CourseType = COURSE_TYPE;
+  private ClassType = CLASS_TYPE;
+  private Class_Status = CLASS_STATUS;
 
-  findAll(type: string) {
-    if (type === Types.Question) {
-      return this.QuestionType;
-    }
-    if (type === Types.ImageSup) {
-      return this.ImageType;
-    }
-    if (type === Types.Exercise) {
-      return this.ExerciseType;
-    }
-    if (type === Types.Subject) {
-      return this.Subject;
-    }
-    if (type === Types.Lesson) {
-      return this.LessonType;
-    }
-    if (type === Types.Course) {
-      return this.CourseType;
+  findAll(type: string, subject: string) {
+    switch (type) {
+      case Types.Question: {
+        if (subject) {
+          return this.QuestionType.filter((item) => item.type === subject).map(
+            ({ type, ...rest }) => rest,
+          );
+        } else {
+          return this.QuestionType.map(({ type, ...rest }) => rest);
+        }
+      }
+
+      case Types.ImageSup:
+        return this.ImageType;
+      case Types.Exercise:
+        return this.ExerciseType;
+      case Types.Subject:
+        return this.Subject;
+      case Types.Lesson:
+        return this.LessonType;
+      case Types.Course:
+        return this.CourseType;
+      case Types.Class:
+        return this.ClassType;
+      case Types.Class_Status:
+        return this.Class_Status;
     }
   }
 }

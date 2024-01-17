@@ -3,11 +3,12 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   Query,
   UseGuards,
+  Put,
+  Req,
 } from '@nestjs/common';
 import { ClassService } from './class.service';
 import { CreateClassDto } from './dto/create-class.dto';
@@ -19,11 +20,13 @@ import { ResponseMessage } from 'src/decorators/response.decorators';
 import { Roles, accessRole } from 'src/decorators/roles.decorators';
 import { RolesGuard } from '../auth/guards/role.guard';
 import { JwtAccessTokenGuard } from '../auth/guards/jwt.guard';
+import { CreateNotificationClassDTO } from './dto/create-notofication-dto';
+import { UpdateNotificationDto } from './dto/update-notification-dto';
 
 @Controller(routes.class)
 @ApiTags(routes.class)
 @ApiBearerAuth()
-@Roles(accessRole.accessAdmin)
+@Roles(accessRole.accessStudent_Trial)
 @UseGuards(RolesGuard)
 @UseGuards(JwtAccessTokenGuard)
 export class ClassController {
@@ -36,8 +39,9 @@ export class ClassController {
 
   //! get
   @Get()
-  findAll(@Query() filter: FilterClassDto) {
-    return this.classService.findAll(filter);
+  findAll(@Req() request: any, @Query() filter: FilterClassDto) {
+    const role = request.user.account.role;
+    return this.classService.findAll(filter, role);
   }
 
   //! detail
@@ -47,7 +51,7 @@ export class ClassController {
     return this.classService.findOne(+id);
   }
   //! update
-  @Patch(':id')
+  @Put(':id')
   update(@Param('id') id: string, @Body() updateClassDto: UpdateClassDto) {
     return this.classService.update(+id, updateClassDto);
   }
@@ -55,5 +59,41 @@ export class ClassController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.classService.remove(+id);
+  }
+
+  @Post('/notification')
+  createNotification(
+    @Body() createNotificationDTO: CreateNotificationClassDTO,
+  ) {
+    return this.classService.createNotify(createNotificationDTO);
+  }
+
+  @Get(':id/notification/:idNotify')
+  detailNodification(
+    @Param('id') id: string,
+    @Param('idNotify') idNotify: string,
+  ) {
+    return this.classService.detailNotify(id, Number(idNotify));
+  }
+
+  @Put(':id/notification/:idNotify')
+  updateNodification(
+    @Param('id') id: string,
+    @Param('idNotify') idNotify: string,
+    @Body() updateNotificationDto: UpdateNotificationDto,
+  ) {
+    return this.classService.updateNotify(
+      id,
+      Number(idNotify),
+      updateNotificationDto,
+    );
+  }
+
+  @Delete(':id/notification/:idNotify')
+  deleteNotification(
+    @Param('id') id: string,
+    @Param('idNotify') idNotify: string,
+  ) {
+    return this.classService.deleteNotify(id, Number(idNotify));
   }
 }

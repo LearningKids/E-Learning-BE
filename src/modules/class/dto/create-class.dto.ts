@@ -1,14 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsArray,
-  IsDate,
   IsEnum,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
 } from 'class-validator';
-import { NumberSchemaDefinition, Types } from 'mongoose';
 import { CLASS_STATUS, CLASS_TYPES } from 'src/core/constants';
+import { learning_day_type } from '../entities/class.entity';
 
 export class CreateClassDto {
   @ApiProperty({ example: 'Toán luyện đề', description: 'Tên lớp học' })
@@ -17,15 +17,15 @@ export class CreateClassDto {
   class_name: string;
 
   @ApiProperty({ example: '', description: 'Ảnh lớp học' })
-  @IsNotEmpty()
+  @IsOptional()
   class_image: string;
 
   @ApiProperty({
-    description: 'Teacher id',
-    example: 2,
+    description: 'List teachers join',
+    example: [1, 2],
   })
-  @IsNumber()
-  teacher: number;
+  @IsArray()
+  teachers: number[];
 
   @ApiProperty({
     description: 'start date',
@@ -42,29 +42,18 @@ export class CreateClassDto {
   end_date: Date;
 
   @ApiProperty({
-    description: 'class status',
-    example: CLASS_STATUS.prepare,
-    enum: CLASS_STATUS,
-  })
-  @IsNotEmpty()
-  @IsEnum(CLASS_STATUS)
-  class_status: string;
-
-  @ApiProperty({
     description: 'class types',
     example: CLASS_TYPES.offline,
     enum: CLASS_TYPES,
   })
-  @IsNotEmpty()
-  @IsEnum(CLASS_TYPES)
-  class_type: string;
-
+  // @IsNotEmpty()
+  // @IsEnum(CLASS_TYPES)
+  // class_type: string;
   @ApiProperty({
     description: 'Room learn',
     example: 'Room 1',
   })
-  @IsNotEmpty()
-  @IsString()
+  @IsOptional()
   room: string;
 
   @ApiProperty({
@@ -81,4 +70,34 @@ export class CreateClassDto {
   @IsNumber()
   @IsNotEmpty()
   course: number;
+
+  @ApiProperty({
+    description: 'number_sessions',
+    example: 10,
+  })
+  @IsNumber()
+  @IsNotEmpty()
+  number_sessions: number;
+
+  @ApiProperty({
+    description: 'learning_day',
+    example: [
+      {
+        day_of_week: 'Thứ 2',
+        start_time: '20:00',
+        end_time: '22:00',
+      },
+    ],
+  })
+  @IsArray()
+  learning_day: learning_day_type[];
+
+  @ApiProperty({
+    description: 'class status',
+    example: CLASS_STATUS.prepare,
+    enum: CLASS_STATUS,
+  })
+  @IsNotEmpty()
+  @IsEnum(CLASS_STATUS)
+  class_status: string;
 }

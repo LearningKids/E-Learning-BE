@@ -56,7 +56,7 @@ export class AccountsController {
   }
   //! get all
   @Get()
-  @Roles(accessRole.accessAdmin)
+  @Roles(accessRole.accessTeacher)
   @UseGuards(RolesGuard)
   findAll(@Query() filter: FilterAccountDto) {
     return this.accountsService.findAll(filter);

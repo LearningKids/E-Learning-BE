@@ -9,8 +9,8 @@ import {
   IsNumber,
   IsString,
 } from 'class-validator';
-import { Types } from 'mongoose';
 import { CLASS_STATUS, CLASS_TYPES } from 'src/core/constants';
+import { learning_day_type } from '../entities/class.entity';
 
 export class UpdateClassDto extends PartialType(
   OmitType(CreateClassDto, [] as const),
@@ -21,15 +21,14 @@ export class UpdateClassDto extends PartialType(
   class_name: string;
 
   @ApiProperty({ example: '', description: 'Ảnh lớp học' })
-  @IsNotEmpty()
   class_image: string;
 
   @ApiProperty({
-    description: 'Teacher id',
-    example: 2,
+    description: 'List students join',
+    example: [1, 2],
   })
-  @IsNumber()
-  teacher: number;
+  @IsArray()
+  teachers: number[];
 
   @ApiProperty({
     description: 'start date',
@@ -54,21 +53,19 @@ export class UpdateClassDto extends PartialType(
   @IsEnum(CLASS_STATUS)
   class_status: string;
 
-  @ApiProperty({
-    description: 'class types',
-    example: CLASS_TYPES.offline,
-    enum: CLASS_TYPES,
-  })
-  @IsNotEmpty()
-  @IsEnum(CLASS_TYPES)
-  class_type: string;
+  // @ApiProperty({
+  //   description: 'class types',
+  //   example: CLASS_TYPES.offline,
+  //   enum: CLASS_TYPES,
+  // })
+  // @IsNotEmpty()
+  // @IsEnum(CLASS_TYPES)
+  // class_type: string;
 
   @ApiProperty({
     description: 'Room learn',
     example: 'Meta author',
   })
-  @IsNotEmpty()
-  @IsString()
   room: string;
 
   @ApiProperty({
@@ -85,4 +82,24 @@ export class UpdateClassDto extends PartialType(
   @IsNumber()
   @IsNotEmpty()
   course: number;
+
+  @ApiProperty({
+    description: 'number_sessions',
+    example: 10,
+  })
+  @IsNumber()
+  @IsNotEmpty()
+  number_sessions: number;
+
+  @ApiProperty({
+    description: 'learning_day',
+    example: [
+      {
+        day_of_week: 'Thứ 2',
+        start_time: '20:00',
+        end_time: '22:00',
+      },
+    ],
+  })
+  learing_day: learning_day_type[];
 }

@@ -18,6 +18,7 @@ export class ClassExercise extends BaseEntity {
     required: true,
   })
   exercises_class: number;
+
   @Prop({
     required: true,
     default: EXCERCISE_TYPE_ENTITY.trial_learning,
@@ -26,21 +27,17 @@ export class ClassExercise extends BaseEntity {
   exercise_type: EXCERCISE_TYPE_ENTITY;
 
   @Prop({
-    type: [
-      {
-        type: Number,
-        ref: 'Class',
-        required: true,
-      },
-    ],
+    type: Number,
+    ref: 'Class',
+    required: true,
   })
   class_id: number;
 
   @Prop({
-    type: Date,
+    type: String,
     required: true,
   })
-  due_date: Date;
+  due_date: string;
 
   @Prop({
     type: String,
@@ -52,12 +49,18 @@ export class ClassExercise extends BaseEntity {
     type: Date,
     required: true,
   })
-  lesson_date: string;
+  lesson_date: Date;
+
   @Prop({
     type: Number,
-    required: true,
   })
   pass_score: number;
+
+  @Prop({
+    type: Boolean,
+    default: false,
+  })
+  isBlock: boolean;
 }
 
 export type ClassExerciseDocument = ClassExercise & Document;

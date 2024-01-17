@@ -45,15 +45,15 @@ export class Lesson extends BaseEntity {
   })
   slider: string;
 
-  @Prop({
-    type: [
-      {
-        type: Number,
-        ref: 'Exercise',
-      },
-    ],
-  })
-  exercises: number[];
+  // @Prop({
+  //   type: [
+  //     {
+  //       type: Number,
+  //       ref: 'Exercise',
+  //     },
+  //   ],
+  // })
+  // exercises: number[];
 }
 export type LessonDocument = HydratedDocument<Lesson>;
 

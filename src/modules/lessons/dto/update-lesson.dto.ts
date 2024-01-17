@@ -15,14 +15,14 @@ export class UpdateLessonDto extends PartialType(
   @IsString()
   lesson_name?: string;
 
-  @ApiPropertyOptional({
-    description: 'Loại bài học',
-    enum: LESSON_TYPE_ENTITY,
-    default: LESSON_TYPE_ENTITY.default_lesson,
-  })
-  @IsOptional()
-  @IsEnum(LESSON_TYPE_ENTITY)
-  lesson_type?: string;
+  // @ApiPropertyOptional({
+  //   description: 'Loại bài học',
+  //   enum: LESSON_TYPE_ENTITY,
+  //   default: LESSON_TYPE_ENTITY.default_lesson,
+  // })
+  // @IsOptional()
+  // @IsEnum(LESSON_TYPE_ENTITY)
+  // lesson_type?: string;
 
   @ApiPropertyOptional({
     description: 'Danh sách môn học',
@@ -42,9 +42,9 @@ export class UpdateLessonDto extends PartialType(
   @IsString()
   slider?: string;
 
-  @ApiPropertyOptional({
-    description: 'Exercises',
-    example: [1, 2],
-  })
-  exercises?: number[];
+  // @ApiPropertyOptional({
+  //   description: 'Exercises',
+  //   example: [1, 2],
+  // })
+  // exercises?: number[];
 }

@@ -6,6 +6,26 @@ class MethodBase {
       .findOneAndUpdate({ ...conditions }, data, { new: true })
       .exec();
   }
+  async findAllByCondition(
+    conditions: any,
+    model: PaginateModel<any>,
+    reference?: any,
+    select?: [string],
+  ) {
+    let query = model.find({ ...conditions, deleted_at: null });
+    if (select) {
+      const selectFields = select.join(' ');
+      query = query.select(selectFields);
+    }
+
+    if (reference && reference.length > 0) {
+      for (const ref of reference) {
+        query = query.populate(ref);
+      }
+    }
+
+    return await query.exec();
+  }
 
   async findOneByCondition(
     conditions: any,

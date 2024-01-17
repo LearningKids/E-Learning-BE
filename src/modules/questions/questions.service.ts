@@ -32,6 +32,7 @@ export class QuestionsService {
       question_description: createQuestionDto.question_description,
       author,
       question_meta,
+      subject: createQuestionDto.subject,
     };
 
     const createQuestion = new this.questionModel(dataQuestion);
@@ -45,14 +46,20 @@ export class QuestionsService {
     ]);
     let data = {};
     let filters = {};
-    console.log(pagination);
     if (String(pagination?.personal) === 'true') {
       delete pagination.personal;
-      data = { ...pagination, author: Number(authorID) };
+      data = {
+        ...pagination,
+        author: Number(authorID),
+        subject: Number(pagination.subject),
+      };
       filters = queryFilters(data);
     } else {
       delete pagination.personal;
-      filters = queryFilters(pagination);
+      filters = queryFilters({
+        ...pagination,
+        subject: Number(pagination.subject),
+      });
     }
     const questions = await this.questionModel.paginate(filters, options);
     return questions;
@@ -111,6 +118,7 @@ export class QuestionsService {
         question_type: updateQuestionDto.question_type,
         question_description: updateQuestionDto.question_description,
         question_meta: arrayMeta,
+        subject: updateQuestionDto.subject,
       });
 
       return this.findOne(_id);

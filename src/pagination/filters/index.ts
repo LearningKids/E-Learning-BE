@@ -18,6 +18,7 @@ const queryFilters = (dataFilter: any) => {
   // if (filters.length > 0) {
   //   finalFilters.push({ $and: filters });
   // }
+
   if (filters.length > 0) {
     return { $and: filters };
   } else {

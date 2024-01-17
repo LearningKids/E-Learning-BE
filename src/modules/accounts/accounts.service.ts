@@ -16,6 +16,7 @@ import { AuthService } from '../auth/auth.service';
 import { EmailService } from '../mail/mail.service';
 import methodBase from 'src/helpers/methodBase';
 import baseException from 'src/helpers/baseException';
+import baseRoles from 'src/helpers/baseRole';
 
 @Injectable()
 export class AccountsService {
@@ -37,7 +38,15 @@ export class AccountsService {
   //! all
   async findAll(pagination: FilterAccountDto) {
     const options = paginationQuery(pagination.page, pagination.page_size);
-    const filters = queryFilters(pagination);
+    const getRole = baseRoles.find((role) => role.roleName === pagination.role);
+    const dataFilters = {
+      ...pagination,
+      role: [
+        getRole?.id,
+        getRole?.roleName === baseRoles[1].roleName && getRole?.id - 1,
+      ],
+    };
+    const filters = queryFilters(getRole ? dataFilters : pagination);
     const accounts = await this.accountModel.paginate(filters, options);
     return accounts;
   }
@@ -49,7 +58,7 @@ export class AccountsService {
         this.accountModel,
       );
       if (!account) {
-        baseException.NotFound(`student ${_id}`);
+        baseException.NotFound(`account ${_id}`);
       }
       return account;
     } catch (error) {

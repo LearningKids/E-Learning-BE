@@ -5,12 +5,20 @@ import {
   AutoIncrementID,
   AutoIncrementIDOptions,
 } from '@typegoose/auto-increment';
-import { QUESTION_TYPE_ENTITY } from 'src/core/constants';
+import { QUESTION_TYPE_ENTITY, SUBJECT_ENTITY } from 'src/core/constants';
 
 @Schema({ versionKey: false, timestamps: true })
 export class Question extends BaseEntity {
   @Prop({ type: Number, unique: true })
   _id: number;
+
+  @Prop({
+    required: true,
+    type: Number,
+    enum: SUBJECT_ENTITY,
+    default: SUBJECT_ENTITY.Math,
+  })
+  subject: SUBJECT_ENTITY;
 
   @Prop({
     required: true,

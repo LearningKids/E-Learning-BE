@@ -10,13 +10,13 @@ export class CreateLessonDto {
   @IsString()
   lesson_name: string;
 
-  @ApiProperty({
-    description: 'Loại bài học',
-    enum: LESSON_TYPE_ENTITY,
-    default: LESSON_TYPE_ENTITY.default_lesson,
-  })
-  @IsEnum(LESSON_TYPE_ENTITY)
-  lesson_type: string;
+  // @ApiProperty({
+  //   description: 'Loại bài học',
+  //   enum: LESSON_TYPE_ENTITY,
+  //   default: LESSON_TYPE_ENTITY.default_lesson,
+  // })
+  // @IsEnum(LESSON_TYPE_ENTITY)
+  // lesson_type: string;
 
   @ApiProperty({
     description: 'Danh sách môn học',
@@ -34,10 +34,10 @@ export class CreateLessonDto {
   @IsString()
   slider: string;
 
-  @ApiProperty({
-    description: 'Exercises',
-    example: [1, 2],
-  })
-  @IsArray()
-  exercises: number[];
+  // @ApiProperty({
+  //   description: 'Exercises',
+  //   example: [1, 2],
+  // })
+  // @IsArray()
+  // exercises: number[];
 }

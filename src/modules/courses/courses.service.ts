@@ -37,18 +37,6 @@ export class CoursesService {
         {
           path: 'content_lesson',
           select: '-deleted_at -createdAt -updatedAt',
-          populate: {
-            path: 'exercises',
-            select: '-deleted_at -createdAt -updatedAt',
-            populate: {
-              path: 'questions',
-              select: '-deleted_at -createdAt -updatedAt',
-              populate: {
-                path: 'question_meta',
-                select: '-deleted_at -createdAt -updatedAt',
-              },
-            },
-          },
         },
       ]);
       const filters = queryFilters(pagination);
@@ -66,18 +54,6 @@ export class CoursesService {
         {
           path: 'content_lesson',
           select: '-deleted_at -createdAt -updatedAt',
-          populate: {
-            path: 'exercises',
-            select: '-deleted_at -createdAt -updatedAt',
-            populate: {
-              path: 'questions',
-              select: '-deleted_at -createdAt -updatedAt',
-              populate: {
-                path: 'question_meta',
-                select: '-deleted_at -createdAt -updatedAt',
-              },
-            },
-          },
         },
       ];
       const course = await methodBase.findOneByCondition(

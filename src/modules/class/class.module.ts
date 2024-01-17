@@ -10,6 +10,7 @@ import { Class, ClassSchema } from './entities/class.entity';
 import { AccountsModule } from '../accounts/accounts.module';
 import mongoose from 'mongoose';
 import { CoursesModule } from '../courses/courses.module';
+import { ScheduleModule } from '../schedule/schedule.module';
 
 @Module({
   imports: [
@@ -30,5 +31,6 @@ import { CoursesModule } from '../courses/courses.module';
   ],
   controllers: [ClassController],
   providers: [ClassService],
+  exports: [ClassService],
 })
 export class ClassModule {}

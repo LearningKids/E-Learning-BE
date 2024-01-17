@@ -11,6 +11,9 @@ import { CreateClassDto } from './dto/create-class.dto';
 import { FilterClassDto } from './dto/filter-class.dto';
 import { UpdateClassDto } from './dto/update-class.dto';
 import { Class } from './entities/class.entity';
+import { CreateNotificationClassDTO } from './dto/create-notofication-dto';
+import { UpdateNotificationDto } from './dto/update-notification-dto';
+import baseRoles from 'src/helpers/baseRole';
 
 @Injectable()
 export class ClassService {
@@ -26,7 +29,9 @@ export class ClassService {
       for (const student of createClassDto.students) {
         await this.accountService.findOne(student);
       }
-      await this.accountService.findOne(createClassDto.teacher);
+      for (const teacher of createClassDto.teachers) {
+        await this.accountService.findOne(teacher);
+      }
       await this.courseService.findOne(createClassDto.course);
       const createClass = new this.classModel(createClassDto);
       return createClass.save();
@@ -36,10 +41,10 @@ export class ClassService {
   }
 
   //! all
-  async findAll(pagination: FilterClassDto) {
+  async findAll(pagination: any, role: number) {
     const options = paginationQuery(pagination.page, pagination.page_size, [
       {
-        path: 'teacher',
+        path: 'teachers',
         select: '-deleted_at -createdAt -updatedAt',
       },
       {
@@ -51,7 +56,14 @@ export class ClassService {
         select: '-deleted_at -createdAt -updatedAt',
       },
     ]);
-    const filters = queryFilters(pagination);
+    let paginationRole = pagination;
+    if (role === baseRoles[1].id) {
+      paginationRole = { ...paginationRole, teachers: role };
+    }
+    if (role === baseRoles[2].id || role === baseRoles[3].id) {
+      paginationRole = { ...paginationRole, students: role };
+    }
+    const filters = queryFilters(paginationRole);
     const listClass = await this.classModel.paginate(filters, options);
     return listClass;
   }
@@ -61,7 +73,7 @@ export class ClassService {
     try {
       const options = [
         {
-          path: 'teacher',
+          path: 'teachers',
           select: '-deleted_at -createdAt -updatedAt',
         },
         {
@@ -71,20 +83,21 @@ export class ClassService {
         {
           path: 'course',
           select: '-deleted_at -createdAt -updatedAt',
+          populate: {
+            path: 'content_lesson',
+            select: '-deleted_at -createdAt -updatedAt',
+          },
         },
       ];
-      const course = await methodBase.findOneByCondition(
+      const classDetail = await methodBase.findOneByCondition(
         { _id },
         this.classModel,
         options,
       );
-      if (!course) {
-        baseException.NotFound(`course id ${_id}`);
+      if (!classDetail) {
+        baseException.NotFound(`class id ${_id}`);
       }
-      return {
-        data: course,
-        status: 200,
-      };
+      return classDetail;
     } catch (error) {
       baseException.HttpException(error);
     }
@@ -95,19 +108,20 @@ export class ClassService {
       for (const student of updateClassDto.students) {
         await this.accountService.findOne(student);
       }
-      await this.accountService.findOne(updateClassDto.teacher);
+      for (const teacher of updateClassDto.teachers) {
+        await this.accountService.findOne(teacher);
+      }
       await this.courseService.findOne(updateClassDto.course);
-      const exerciseUpdate = await methodBase.findOneUpdate(
+      const classUpdate = await methodBase.findOneUpdate(
         { _id },
         this.classModel,
         updateClassDto,
       );
-      if (!exerciseUpdate) {
+      if (!classUpdate) {
         baseException.NotFound(`exercise id ${_id}`);
       }
-      return exerciseUpdate;
+      return classUpdate;
     } catch (error) {
-      console.log(error);
       baseException.HttpException(error);
     }
   }
@@ -119,6 +133,117 @@ export class ClassService {
         baseException.NotFound(`class id ${_id}`);
       }
       throw new HttpException('Delete sucess', HttpStatus.OK);
+    } catch (error) {
+      baseException.HttpException(error);
+    }
+  }
+
+  async createNotify(createNotifyDTO: CreateNotificationClassDTO) {
+    try {
+      const classDetail = await methodBase.findOneByCondition(
+        { _id: createNotifyDTO.idClass },
+        this.classModel,
+      );
+      const arrayNotofy = classDetail.notification;
+      if (arrayNotofy.length > 10) {
+        throw new HttpException(
+          'Notification of class must less than 10',
+          HttpStatus.FORBIDDEN,
+        );
+      }
+      arrayNotofy.push(createNotifyDTO);
+      const NotifyCreate = await methodBase.findOneUpdate(
+        { _id: createNotifyDTO.idClass },
+        this.classModel,
+        {
+          $set: {
+            notification: arrayNotofy,
+          },
+        },
+      );
+      return NotifyCreate.notification;
+    } catch (error) {
+      baseException.HttpException(error);
+    }
+  }
+
+  async detailNotify(idClass: string, idNotify: number) {
+    try {
+      const classDetail = await methodBase.findOneByCondition(
+        { _id: idClass },
+        this.classModel,
+      );
+      if (!classDetail) {
+        baseException.NotFound(`class id ${idClass}`);
+      }
+
+      if (classDetail.notification.length - 1 < idNotify) {
+        baseException.NotFound(`notification id ${idNotify} `);
+      }
+      return classDetail.notification[idNotify];
+    } catch (error) {
+      baseException.HttpException(error);
+    }
+  }
+
+  async deleteNotify(idClass: string, idNotify: number) {
+    try {
+      const classDetail = await methodBase.findOneByCondition(
+        { _id: idClass },
+        this.classModel,
+      );
+      if (!classDetail) {
+        baseException.NotFound(`class id ${idClass}`);
+      }
+
+      if (classDetail.notification.length - 1 < idNotify) {
+        baseException.NotFound(`notification id ${idNotify} `);
+      }
+      const arrayNotofy = classDetail.notification;
+      arrayNotofy.splice(idNotify, 1);
+      const NotifyDelete = await methodBase.findOneUpdate(
+        { _id: idClass },
+        this.classModel,
+        {
+          $set: {
+            notification: arrayNotofy,
+          },
+        },
+      );
+      return NotifyDelete.notification;
+    } catch (error) {
+      baseException.HttpException(error);
+    }
+  }
+
+  async updateNotify(
+    idClass: string,
+    idNotify: number,
+    body: UpdateNotificationDto,
+  ) {
+    try {
+      const classDetail = await methodBase.findOneByCondition(
+        { _id: idClass },
+        this.classModel,
+      );
+      if (!classDetail) {
+        baseException.NotFound(`class id ${idClass}`);
+      }
+
+      if (classDetail.notification.length - 1 < idNotify) {
+        baseException.NotFound(`notification id ${idNotify} `);
+      }
+      classDetail.notification[idNotify] = body;
+      const NotifyUpdate = await methodBase.findOneUpdate(
+        { _id: idClass },
+        this.classModel,
+        {
+          $set: {
+            notification: classDetail.notification,
+          },
+        },
+      );
+      return NotifyUpdate.notification[idNotify];
     } catch (error) {
       baseException.HttpException(error);
     }

@@ -1,13 +1,7 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateCourseDto } from './create-course.dto';
 import { ApiProperty, OmitType } from '@nestjs/swagger';
-import {
-  ArrayNotEmpty,
-  IsEnum,
-  IsNotEmpty,
-  IsNumber,
-  IsString,
-} from 'class-validator';
+import { ArrayNotEmpty, IsEnum, IsNotEmpty, IsString } from 'class-validator';
 import { COURSE_TYPE_ENTITY } from 'src/core/constants';
 
 export class UpdateCourseDto extends PartialType(
@@ -23,14 +17,14 @@ export class UpdateCourseDto extends PartialType(
   @IsString()
   course_description: string;
 
-  @ApiProperty({
-    example: COURSE_TYPE_ENTITY.charged,
-    description: 'Loại khóa học',
-    enum: COURSE_TYPE_ENTITY,
-  })
-  @IsNotEmpty()
-  @IsEnum(COURSE_TYPE_ENTITY)
-  course_type: string;
+  // @ApiProperty({
+  //   example: COURSE_TYPE_ENTITY.charged,
+  //   description: 'Loại khóa học',
+  //   enum: COURSE_TYPE_ENTITY,
+  // })
+  // @IsNotEmpty()
+  // @IsEnum(COURSE_TYPE_ENTITY)
+  // course_type: string;
 
   // @ApiProperty({ example: 10, description: 'Số lượng bài học' })
   // @IsNotEmpty()
